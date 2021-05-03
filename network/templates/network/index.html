@@ -2,22 +2,27 @@
 
 
 {% block body %}
-    <div class="mt-3">
-        <div id="alert-box">
-        
-        </div>
-        <div>
-            <form method="post" id="post-form">
-                {% csrf_token %}
-                {{ form }}
-                <input type="submit" class="btn btn-outline-primary data-input" value="Send">
-            </form>
-        </div>
-        <div id="alert-box"></div>
-        <div id="post-list">
-        </div>
-        <div class="text-center mb-3" id="end-box">
-            <button class="btn btn-primary" id="load-btn">Load More</button>
+    <div id="profile-info">
+    </div>
+    
+    <div id="main-body">
+        <div class="mt-3">
+            <div id="alert-box">
+            
+            </div>
+            <div>
+                <form method="post" id="post-form">
+                    {% csrf_token %}
+                    {{ form }}
+                    <input type="submit" class="btn btn-outline-primary data-input" value="Send">
+                </form>
+            </div>
+            <div id="alert-box"></div>
+            <div id="post-list">
+            </div>
+            <div class="text-center mb-3" id="end-box">
+                <button class="btn btn-primary" id="load-btn">Load More</button>
+            </div>
         </div>
     </div>
 {% endblock %}

@@ -97,20 +97,17 @@ def like_unlike_post(request):
 def profile_page(request):
     user = request.user
     #auctions = AuctionListing.objects.filter(user=user.id)
-    profile = Profile.objects.get(user=user.id)
+    profile = Profile.objects.get(user=user)
     print(profile)
     posts = Post.objects.filter(creator=profile)
     #profile = Profile.objects.get(user=user.id)
-    if request.is_ajax:
-        return JsonResponse({
-            'id': profile.id,
-            'following': profile.followers.all().count(),
-            'followers': profile.following.all().count()
-        })
+    profile_info = {
+        'id': profile.id,
+        'following': profile.followers.all().count(),
+        'followers': profile.following.all().count()
+    }
+    return JsonResponse({'data': profile_info})
 
-    context = {'posts': posts}
-
-    return render(request, 'network/profile.html', context)
 
 
 def login_view(request):

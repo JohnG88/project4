@@ -8,6 +8,38 @@ const alertBox = document.getElementById('alert-box');
 
 const profileBox = document.getElementById('profile-info');
 
+const profileName = document.getElementById('profile-name');
+const mainBody = document.getElementById('main-body');
+
+const allPosts = document.getElementById('all-posts');
+
+
+$('#profile-name').click(function() {
+    $('#profile-info').show();
+    if ($('#main-body').is(':visible')) {
+        $('#main-body').hide();
+    }
+});
+
+$('#all-posts').click(function() {
+    $('#main-body').show();
+    if ($('#profile-info').is(':visible')) {
+        $('#profile-info').hide();
+    }
+})
+
+/*
+profileName.click(function() {
+    profileBox.show(function() {
+        if (mainBody.is(':visible')) {
+            mainBody.hide();
+        }
+    })
+})
+*/
+
+
+
 function getCookie(name) {
     let cookieValue = null;
     if (document.cookie && document.cookie !== '') {
@@ -53,6 +85,7 @@ const likeUnlikePosts = () => {
 let visible = 3
 
 const getData = () => {
+
     $.ajax({
         type: 'GET',
         url: `getAjax/${visible}`,
@@ -165,22 +198,52 @@ const handleAlerts = (type, msg) => {
         </div>
     `
 }
+    
+// .removeClass
 
-$(document).ready(function()  {
-    $.ajax({
-        type: 'GET',
-        url: 'profile_page',
-        success: function(response) {
-            console.log(response);
-            response.forEach(info => {
-                console.log(info)
-                profileBox.innerHTML += ` 
-                <p>${info.id} - ${info.followers} | ${info.following}</p>`
-            })
-                
-            
-        }
-    })
-})
+
+
+
+
+$.ajax({
+    type: 'GET',
+    url: 'profile_page',
+    success: function(response) {
+        console.log(response);
+        const pfData = response.data;
+        console.log(pfData);
+            profileBox.innerHTML += ` 
+            <p>Profile: ${pfData.id}</p>
+            <p>Following: ${pfData.following}</p>
+            <p>Followers: ${pfData.followers}</p>
+            `
+    },
+    error: function(error) {
+        console.log(error);
+    }
+});
+
+/*
+$.ajax({
+    type: 'GET',
+    url: 'profile_page',
+    success: function(response) {
+        console.log(response);
+        const pfData = response.data;
+        console.log(pfData);
+            profileBox.innerHTML += ` 
+            <p>Profile: ${pfData.id}</p>
+            <p>Following: ${pfData.following}</p>
+            <p>Followers: ${pfData.followers}</p>
+            `
+    },
+    error: function(error) {
+        console.log(error);
+    }
+});
+*/
+
+
+
 
 getData();
