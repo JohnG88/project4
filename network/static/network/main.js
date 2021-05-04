@@ -6,7 +6,9 @@ const postForm = document.getElementById('post-form');
 const title = document.getElementById('id_content');
 const alertBox = document.getElementById('alert-box');
 
+const allProfileObjs = document.getElementById('all-profile-objs');
 const profileBox = document.getElementById('profile-info');
+const profileObjs = document.getElementById('profile-posts');
 
 const profileName = document.getElementById('profile-name');
 const mainBody = document.getElementById('main-body');
@@ -15,7 +17,7 @@ const allPosts = document.getElementById('all-posts');
 
 
 $('#profile-name').click(function() {
-    $('#profile-info').show();
+    $('#all-profile-objs').show();
     if ($('#main-body').is(':visible')) {
         $('#main-body').hide();
     }
@@ -23,10 +25,10 @@ $('#profile-name').click(function() {
 
 $('#all-posts').click(function() {
     $('#main-body').show();
-    if ($('#profile-info').is(':visible')) {
-        $('#profile-info').hide();
+    if ($('#all-profile-objs').is(':visible')) {
+        $('#all-profile-objs').hide();
     }
-})
+});
 
 /*
 profileName.click(function() {
@@ -210,13 +212,41 @@ $.ajax({
     url: 'profile_page',
     success: function(response) {
         console.log(response);
+        console.log(response.posts_obj)
         const pfData = response.data;
+        const posts = JSON.parse(response.posts_obj)
         console.log(pfData);
+        console.log(posts)
             profileBox.innerHTML += ` 
             <p>Profile: ${pfData.id}</p>
             <p>Following: ${pfData.following}</p>
             <p>Followers: ${pfData.followers}</p>
             `
+            
+            posts.forEach(ele => {
+                profileObjs.innerHTML += `
+                    <div class="card mb-2" style="width: 18rem;">
+                    <div class="card-body">
+                        <h5 class="card-title">${el.fields.creator}</h5>
+                        <p class="card-text">${el.fields.content}</p>
+                        <p class="card-text">${el.fields.created_date}</p>
+                    </div>
+                    <div class="card-footer">
+                        <div class="row">
+                            <div class="col">
+                                <a href="#" class="btn btn-primary">Delete</a>
+                            </div>
+                            <div class="col">
+                                <form class="like-unlike-forms" data-form-id="${el.id}">
+                                    <button href="#" class="btn btn-primary" id="like-unlike-${el.id}">${el.likes ? `Unlike (${el.count})` : `Like (${el.count})`}</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                `
+                
+            });
     },
     error: function(error) {
         console.log(error);

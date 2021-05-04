@@ -8,6 +8,7 @@ from .forms import PostForm
 
 from .models import *
 
+from django.core import serializers
 import json
 
 
@@ -100,13 +101,14 @@ def profile_page(request):
     profile = Profile.objects.get(user=user)
     print(profile)
     posts = Post.objects.filter(creator=profile)
+    posts_obj = serializers.serialize('json', posts)
     #profile = Profile.objects.get(user=user.id)
     profile_info = {
         'id': profile.id,
         'following': profile.followers.all().count(),
         'followers': profile.following.all().count()
     }
-    return JsonResponse({'data': profile_info})
+    return JsonResponse({'data': profile_info, 'posts_obj': posts_obj})
 
 
 
