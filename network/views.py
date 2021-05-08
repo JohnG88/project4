@@ -70,7 +70,7 @@ def getAjax(request, num_posts):
             'created_date': p.created_date,
             'likes': True if profile in p.likes.all() else False,
             'count': p.like_count,
-            'creator': p.creator.user.username
+            'creator': {'name': p.creator.user.username, 'id': p.creator.id}
             }
             data.append(item)
         # IDK how this worked, maybe because the data has been serialized from models because in other projects the p.creator would return an object and when you would try oop it would say the foreignkey field was not JSON serializable.
@@ -103,14 +103,38 @@ def profile_page(request):
     posts = Post.objects.filter(creator=profile)
     posts_obj = serializers.serialize('json', posts)
     #profile = Profile.objects.get(user=user.id)
+    posts_data = []
+    for pd in posts:
+        p_item = {
+            'id': pd.id,
+            'content': pd.content,
+            'created_date': pd.created_date,
+            'likes': True if profile in pd.likes.all() else False,
+            'count': pd.like_count,
+            'creator': {'name': pd.creator.user.username, 'id': pd.creator.id}
+        }
+        posts_data.append(p_item)
+
     profile_info = {
         'id': profile.id,
+        'user': profile.user.username,
         'following': profile.followers.all().count(),
         'followers': profile.following.all().count()
     }
-    return JsonResponse({'data': profile_info, 'posts_obj': posts_obj})
+    return JsonResponse({'data': profile_info, 'posts_obj': posts_data})
 
+def get_other_profile(request, id):
+    #user = User.objects.get(username=username)
+    profile = Profile.objects.get(id=id)
+    print(profile)
 
+    profile_obj = serializers.serialize('json', profile)
+    print(profile_obj)
+
+    return JsonResponse({'profile_obj': profile_obj})
+
+    #context = {'profile': profile}
+    #return render(request, 'network.other_profile.html', context)
 
 def login_view(request):
     if request.method == "POST":

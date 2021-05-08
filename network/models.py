@@ -7,6 +7,13 @@ from django.utils import timezone
 class User(AbstractUser):
     pass
 
+"""
+    to get the id of profile:
+        p1 = Profile.objects.get(id=1)
+
+    to get the posts of the p1:
+        Post.objects.filter(creator=p1)
+"""
 class Profile(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     followers = models.ManyToManyField(User, related_name="get_followed_profiles")

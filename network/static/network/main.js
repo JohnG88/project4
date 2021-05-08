@@ -15,6 +15,8 @@ const mainBody = document.getElementById('main-body');
 
 const allPosts = document.getElementById('all-posts');
 
+const otherProfile = document.getElementById('get-other-profile');
+
 
 $('#profile-name').click(function() {
     $('#all-profile-objs').show();
@@ -100,7 +102,7 @@ const getData = () => {
                 postsBox.innerHTML += `
                 <div class="card mb-2" style="width: 18rem;">
                     <div class="card-body">
-                        <h5 class="card-title">${el.creator}</h5>
+                    <a id="get-other-profile" href="#"><h5 class="card-title">${el.creator.name}</h5></a>
                         <p class="card-text">${el.content}</p>
                         <p class="card-text">${el.created_date}</p>
                     </div>
@@ -164,7 +166,7 @@ postForm.addEventListener('submit', e => {
             postsBox.insertAdjacentHTML('afterbegin', `
                 <div class="card mb-2" style="width: 18rem;">
                     <div class="card-body">
-                        <h5 class="card-title">${data.creator}</h5>
+                        <h5 class="card-title">${data.creator.name}</h5>
                         <p class="card-text">${data.content}</p>
                         <p class="card-text">${data.created_date}</p>
                     </div>
@@ -214,11 +216,11 @@ $.ajax({
         console.log(response);
         console.log(response.posts_obj)
         const pfData = response.data;
-        const posts = JSON.parse(response.posts_obj)
+        const posts = response.posts_obj;
         console.log(pfData);
         console.log(posts)
             profileBox.innerHTML += ` 
-            <p>Profile: ${pfData.id}</p>
+            <p>Profile: ${pfData.user}</p>
             <p>Following: ${pfData.following}</p>
             <p>Followers: ${pfData.followers}</p>
             `
@@ -227,9 +229,9 @@ $.ajax({
                 profileObjs.innerHTML += `
                     <div class="card mb-2" style="width: 18rem;">
                     <div class="card-body">
-                        <h5 class="card-title">${el.fields.creator}</h5>
-                        <p class="card-text">${el.fields.content}</p>
-                        <p class="card-text">${el.fields.created_date}</p>
+                        <h5 class="card-title">${ele.creator.name}</h5>
+                        <p class="card-text">${ele.content}</p>
+                        <p class="card-text">${ele.created_date}</p>
                     </div>
                     <div class="card-footer">
                         <div class="row">
@@ -237,8 +239,8 @@ $.ajax({
                                 <a href="#" class="btn btn-primary">Delete</a>
                             </div>
                             <div class="col">
-                                <form class="like-unlike-forms" data-form-id="${el.id}">
-                                    <button href="#" class="btn btn-primary" id="like-unlike-${el.id}">${el.likes ? `Unlike (${el.count})` : `Like (${el.count})`}</button>
+                                <form class="like-unlike-forms" data-form-id="${ele.id}">
+                                    <button href="#" class="btn btn-primary" id="like-unlike-${ele.id}">${ele.likes ? `Unlike (${ele.count})` : `Like (${ele.count})`}</button>
                                 </form>
                             </div>
                         </div>
@@ -256,24 +258,20 @@ $.ajax({
 /*
 $.ajax({
     type: 'GET',
-    url: 'profile_page',
+    url: `other-profile/${username}`,
     success: function(response) {
         console.log(response);
-        const pfData = response.data;
-        console.log(pfData);
-            profileBox.innerHTML += ` 
-            <p>Profile: ${pfData.id}</p>
-            <p>Following: ${pfData.following}</p>
-            <p>Followers: ${pfData.followers}</p>
-            `
+        const otherProfileData = response.profile_obj;
+        console.log(otherProfileData);
     },
     error: function(error) {
         console.log(error);
     }
 });
+
+/*
+social network part 9 has delete functionality
 */
-
-
 
 
 getData();
