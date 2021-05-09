@@ -102,7 +102,7 @@ const getData = () => {
                 postsBox.innerHTML += `
                 <div class="card mb-2" style="width: 18rem;">
                     <div class="card-body">
-                    <a id="get-other-profile" href="#"><h5 class="card-title">${el.creator.name}</h5></a>
+                    <a class="other-profile-id" data-id="${el.creator.id}" href="#"><h5 class="card-title">${el.creator.name}</h5></a>
                         <p class="card-text">${el.content}</p>
                         <p class="card-text">${el.created_date}</p>
                     </div>
@@ -255,19 +255,52 @@ $.ajax({
     }
 });
 
+$(document).on('click', '.other-profile-id', function() {
+    var profileId = $(this).data('id');
+    console.log(profileId);
+    alert(profileId)
+
+    $.ajax({
+        type: 'GET',
+        url: `other-profile/${profileId}`,
+        success: function(response) {
+            console.log(response);
+            const otherProfileData = response.single_profile_objs;
+            const otherProfileInfo = response.single_profile_info;
+            console.log(otherProfileData);
+            otherProfile.innerHTML += ` 
+            <p>Profile: ${otherProfileInfo.user}</p>
+            <p>Following: ${otherProfileInfo.following}</p>
+            <p>Followers: ${otherProfileInfo.followers}</p>
+            `
+
+            
+            
+        },
+        error: function(error) {
+            console.log(error);
+        }
+    });
+});
+
+
 /*
+var profileId = $('.other-profile-id').data('id');
+console.log(profileId);
+
 $.ajax({
     type: 'GET',
-    url: `other-profile/${username}`,
+    url: 'other-profile/' + profileId,
     success: function(response) {
         console.log(response);
         const otherProfileData = response.profile_obj;
-        console.log(otherProfileData);
+        console.log("Other profile data..." + otherProfileData);
     },
     error: function(error) {
         console.log(error);
     }
 });
+*/
 
 /*
 social network part 9 has delete functionality

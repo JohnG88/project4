@@ -127,11 +127,31 @@ def get_other_profile(request, id):
     #user = User.objects.get(username=username)
     profile = Profile.objects.get(id=id)
     print(profile)
+    posts = Post.objects.filter(creator=profile)
+    
+    single_profile_objs = []
+    for spd in posts:
+        spd_item = {
+            'id': spd.id,
+            'content': spd.content,
+            'created_data': spd.created_date,
+            'likes': True if profile in spd.likes.all() else False,
+            'count': spd.like_count,
+            'creator': {'name': spd.creator.user.username, 'id': spd.creator.id}
+        }
+        single_profile_objs.append(spd_item)
 
-    profile_obj = serializers.serialize('json', profile)
-    print(profile_obj)
+    single_profile_info = {
+        'id': profile.id,
+        'user': profile.user.username,
+        'following': profile.followers.all().count(),
+        'followers': profile.following.all().count()
+    }
 
-    return JsonResponse({'profile_obj': profile_obj})
+    #profile_obj = serializers.serialize('json', posts)
+    #print(profile_obj)
+
+    return JsonResponse({'single_profile_objs': single_profile_objs, 'single_profile_info': single_profile_info})
 
     #context = {'profile': profile}
     #return render(request, 'network.other_profile.html', context)
