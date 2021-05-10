@@ -20,17 +20,27 @@ const otherProfile = document.getElementById('get-other-profile');
 
 $('#profile-name').click(function() {
     $('#all-profile-objs').show();
-    if ($('#main-body').is(':visible')) {
-        $('#main-body').hide();
+    if ($('#main-body, #get-other-profile').is(':visible')) {
+        $('#main-body, #get-other-profile').hide();
     }
 });
 
 $('#all-posts').click(function() {
     $('#main-body').show();
-    if ($('#all-profile-objs').is(':visible')) {
-        $('#all-profile-objs').hide();
+    if ($('#all-profile-objs, #get-other-profile').is(':visible')) {
+        $('#all-profile-objs, #get-other-profile').hide();
     }
 });
+/*
+- Needed to take off quotes from middle of ids of if statement it is fixed now.
+
+$('.other-profile-id').click(function() {
+    $('#get-other-profile').show();
+    if ($('#main-body, #all-profile-objs').is(':visible')) {
+        $('#main-body, #all-profile-objs').hide();
+    }
+})
+*/
 
 /*
 profileName.click(function() {
@@ -255,7 +265,15 @@ $.ajax({
     }
 });
 
+
+
 $(document).on('click', '.other-profile-id', function() {
+
+    $('#get-other-profile').show();
+    if ($('#main-body, #all-profile-objs').is(':visible')) {
+        $('#main-body, #all-profile-objs').hide();
+    }
+
     var profileId = $(this).data('id');
     console.log(profileId);
     alert(profileId)
