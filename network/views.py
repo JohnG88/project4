@@ -25,7 +25,8 @@ def index(request):
                 'created_date': item_form.created_date,
                 #'likes': True if profile in p.likes.all() else False,
                 #'count': p.like_count,
-                'creator': item_form.creator.user.username
+                'creator': item_form.creator.user.username,
+                'creator_id': item_form.creator.id,
             })
     
     """post = Post.objects.all()

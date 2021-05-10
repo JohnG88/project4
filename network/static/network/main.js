@@ -176,7 +176,7 @@ postForm.addEventListener('submit', e => {
             postsBox.insertAdjacentHTML('afterbegin', `
                 <div class="card mb-2" style="width: 18rem;">
                     <div class="card-body">
-                        <h5 class="card-title">${data.creator.name}</h5>
+                        <a class="other-profile-id" data-id="${data.creator_id}" href="#"><h5 class="card-title">${data.creator}</h5></a>
                         <p class="card-text">${data.content}</p>
                         <p class="card-text">${data.created_date}</p>
                     </div>
@@ -217,63 +217,72 @@ const handleAlerts = (type, msg) => {
 
 
 
-
-
-$.ajax({
-    type: 'GET',
-    url: 'profile_page',
-    success: function(response) {
-        console.log(response);
-        console.log(response.posts_obj)
-        const pfData = response.data;
-        const posts = response.posts_obj;
-        console.log(pfData);
-        console.log(posts)
-            profileBox.innerHTML += ` 
-            <p>Profile: ${pfData.user}</p>
-            <p>Following: ${pfData.following}</p>
-            <p>Followers: ${pfData.followers}</p>
-            `
-            
-            posts.forEach(ele => {
-                profileObjs.innerHTML += `
-                    <div class="card mb-2" style="width: 18rem;">
-                    <div class="card-body">
-                        <h5 class="card-title">${ele.creator.name}</h5>
-                        <p class="card-text">${ele.content}</p>
-                        <p class="card-text">${ele.created_date}</p>
-                    </div>
-                    <div class="card-footer">
-                        <div class="row">
-                            <div class="col">
-                                <a href="#" class="btn btn-primary">Delete</a>
-                            </div>
-                            <div class="col">
-                                <form class="like-unlike-forms" data-form-id="${ele.id}">
-                                    <button href="#" class="btn btn-primary" id="like-unlike-${ele.id}">${ele.likes ? `Unlike (${ele.count})` : `Like (${ele.count})`}</button>
-                                </form>
+/*
+$('#profile-name').click(function(e) {
+    e.preventDefault();
+    $('#all-profile-objs').show();
+    if ($('#main-body, #get-other-profile').is(':visible')) {
+        $('#main-body, #get-other-profile').hide();
+    }
+*/
+    $.ajax({
+        type: 'GET',
+        url: 'profile_page',
+        success: function(response) {
+            console.log(response);
+            console.log(response.posts_obj)
+            const pfData = response.data;
+            const posts = response.posts_obj;
+            console.log(pfData);
+            console.log(posts)
+                $('#profile-info').html(` 
+                <p>Profile: ${pfData.user}</p>
+                <p>Following: ${pfData.following}</p>
+                <p>Followers: ${pfData.followers}</p>
+                `
+                )
+                posts.forEach(ele => {
+                    profileObjs.innerHTML += `
+                        <div class="card mb-2" style="width: 18rem;">
+                        <div class="card-body">
+                            <a class="other-profile-id" data-id="${ele.creator.id}" href="#"><h5 class="card-title">${ele.creator.name}</h5></a>
+                            <p class="card-text">${ele.content}</p>
+                            <p class="card-text">${ele.created_date}</p>
+                        </div>
+                        <div class="card-footer">
+                            <div class="row">
+                                <div class="col">
+                                    <a href="#" class="btn btn-primary">Delete</a>
+                                </div>
+                                <div class="col">
+                                    <form class="like-unlike-forms" data-form-id="${ele.id}">
+                                        <button href="#" class="btn btn-primary" id="like-unlike-${ele.id}">${ele.likes ? `Unlike (${ele.count})` : `Like (${ele.count})`}</button>
+                                    </form>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                `
-                
-            });
-    },
-    error: function(error) {
-        console.log(error);
-    }
-});
+                    `
+                    
+                });
+        },
+        error: function(error) {
+            console.log(error);
+        }
+    });
+//});
 
 
-
-$(document).on('click', '.other-profile-id', function() {
-
+$(document).on('click', '.other-profile-id', function(e) {
+    e.preventDefault();
+    //e.stopPropagation();
+    //return false;
     $('#get-other-profile').show();
     if ($('#main-body, #all-profile-objs').is(':visible')) {
         $('#main-body, #all-profile-objs').hide();
     }
-
+    //.data
+    
     var profileId = $(this).data('id');
     console.log(profileId);
     alert(profileId)
@@ -286,13 +295,18 @@ $(document).on('click', '.other-profile-id', function() {
             const otherProfileData = response.single_profile_objs;
             const otherProfileInfo = response.single_profile_info;
             console.log(otherProfileData);
+            $('#get-other-profile').html(`
+            <p>Profile: ${otherProfileInfo.user}</p>
+            <p>Following: ${otherProfileInfo.following}</p>
+            <p>Followers: ${otherProfileInfo.followers}</p>
+            `);
+            /*
             otherProfile.innerHTML += ` 
             <p>Profile: ${otherProfileInfo.user}</p>
             <p>Following: ${otherProfileInfo.following}</p>
             <p>Followers: ${otherProfileInfo.followers}</p>
             `
-
-            
+            */
             
         },
         error: function(error) {
