@@ -194,6 +194,29 @@ postForm.addEventListener('submit', e => {
                     </div>
                 </div>
             `)
+
+            profileObjs.insertAdjacentHTML('afterbegin', `
+            <div class="card mb-2" style="width: 18rem;">
+            <div class="card-body">
+                <a class="other-profile-id" data-id="${data.creator_id}" href="#"><h5 class="card-title">${data.creator}</h5></a>
+                <p class="card-text">${data.content}</p>
+                <p class="card-text">${data.created_date}</p>
+            </div>
+            <div class="card-footer">
+                <div class="row">
+                    <div class="col">
+                        <a href="#" class="btn btn-primary">Details</a>
+                    </div>
+                    <div class="col">
+                        <form class="like-unlike-forms" data-form-id="${data.id}">
+                            <button href="#" class="btn btn-primary" id="like-unlike-${data.id}">Like (0)</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div> 
+        `)
+
             likeUnlikePosts()
             handleAlerts('success', 'New post added...')
             postForm.reset()
@@ -216,15 +239,14 @@ const handleAlerts = (type, msg) => {
 // .removeClass
 
 
+let toFollowLoaded = false;
 
-/*
-$('#profile-name').click(function(e) {
-    e.preventDefault();
+$('#profile-name').click(function() {
     $('#all-profile-objs').show();
     if ($('#main-body, #get-other-profile').is(':visible')) {
         $('#main-body, #get-other-profile').hide();
     }
-*/
+
     $.ajax({
         type: 'GET',
         url: 'profile_page',
@@ -235,12 +257,16 @@ $('#profile-name').click(function(e) {
             const posts = response.posts_obj;
             console.log(pfData);
             console.log(posts)
-                $('#profile-info').html(` 
+            if (!toFollowLoaded) {
+
+
+
+                profileBox.innerHTML += ` 
                 <p>Profile: ${pfData.user}</p>
                 <p>Following: ${pfData.following}</p>
                 <p>Followers: ${pfData.followers}</p>
                 `
-                )
+                
                 posts.forEach(ele => {
                     profileObjs.innerHTML += `
                         <div class="card mb-2" style="width: 18rem;">
@@ -265,12 +291,14 @@ $('#profile-name').click(function(e) {
                     `
                     
                 });
+            }
+            toFollowLoaded = true;
         },
         error: function(error) {
             console.log(error);
         }
     });
-//});
+});
 
 
 $(document).on('click', '.other-profile-id', function(e) {
