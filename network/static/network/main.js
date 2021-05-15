@@ -17,19 +17,22 @@ const allPosts = document.getElementById('all-posts');
 
 const otherProfile = document.getElementById('get-other-profile');
 
-
+/*
 $('#profile-name').click(function() {
     $('#all-profile-objs').show();
     if ($('#main-body, #get-other-profile').is(':visible')) {
         $('#main-body, #get-other-profile').hide();
     }
 });
+*/
 
 $('#all-posts').click(function() {
     $('#main-body').show();
     if ($('#all-profile-objs, #get-other-profile').is(':visible')) {
         $('#all-profile-objs, #get-other-profile').hide();
     }
+
+    alertBox.innerHTML = '';
 });
 /*
 - Needed to take off quotes from middle of ids of if statement it is fixed now.
@@ -194,7 +197,7 @@ postForm.addEventListener('submit', e => {
                     </div>
                 </div>
             `)
-
+            /*
             profileObjs.insertAdjacentHTML('afterbegin', `
             <div class="card mb-2" style="width: 18rem;">
             <div class="card-body">
@@ -216,7 +219,7 @@ postForm.addEventListener('submit', e => {
             </div>
         </div> 
         `)
-
+        */
             likeUnlikePosts()
             handleAlerts('success', 'New post added...')
             postForm.reset()
@@ -226,9 +229,14 @@ postForm.addEventListener('submit', e => {
             handleAlerts('danger', 'oops....something went wrong')
         }
     });
-})
+    // Return false below stopped the duplicate from appearing when profile name was clicked in navbar
+    // Perhaps not, commenting it out it still doesn't produce the duplicate
+    // Idk why it started not producing duplicates, I'm going to restart laptop.
+    //return false;
+});
 
 const handleAlerts = (type, msg) => {
+
     alertBox.innerHTML = `
         <div class="alert alert-${type}" role="alert">
             ${msg}
@@ -242,6 +250,7 @@ const handleAlerts = (type, msg) => {
 let toFollowLoaded = false;
 
 $('#profile-name').click(function() {
+//$('#profile-name').click(function(e) {
     $('#all-profile-objs').show();
     if ($('#main-body, #get-other-profile').is(':visible')) {
         $('#main-body, #get-other-profile').hide();
@@ -252,15 +261,16 @@ $('#profile-name').click(function() {
         url: 'profile_page',
         success: function(response) {
             console.log(response);
-            console.log(response.posts_obj)
             const pfData = response.data;
             const posts = response.posts_obj;
             console.log(pfData);
             console.log(posts)
+
+            
             if (!toFollowLoaded) {
+            
 
-
-
+                
                 profileBox.innerHTML += ` 
                 <p>Profile: ${pfData.user}</p>
                 <p>Following: ${pfData.following}</p>
@@ -291,8 +301,11 @@ $('#profile-name').click(function() {
                     `
                     
                 });
+            
             }
+            
             toFollowLoaded = true;
+            
         },
         error: function(error) {
             console.log(error);
