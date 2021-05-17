@@ -16,6 +16,8 @@ const mainBody = document.getElementById('main-body');
 const allPosts = document.getElementById('all-posts');
 
 const otherProfile = document.getElementById('get-other-profile');
+const otherProfilePosts = document.getElementById('other-profile-posts');
+const otherProfileStats = document.getElementById('other-profile-stats');
 
 /*
 $('#profile-name').click(function() {
@@ -32,7 +34,11 @@ $('#all-posts').click(function() {
         $('#all-profile-objs, #get-other-profile').hide();
     }
 
+    //$('#get-other-profile').load(" #get-other-profile");
+
     alertBox.innerHTML = '';
+    otherProfileStats.innerHTML = '';
+    otherProfilePosts.innerHTML = '';
 });
 /*
 - Needed to take off quotes from middle of ids of if statement it is fixed now.
@@ -115,7 +121,7 @@ const getData = () => {
                 postsBox.innerHTML += `
                 <div class="card mb-2" style="width: 18rem;">
                     <div class="card-body">
-                    <a class="other-profile-id" data-id="${el.creator.id}" href="#"><h5 class="card-title">${el.creator.name}</h5></a>
+                    <a id="profile-link" class="other-profile-id" data-id="${el.creator.id}" href="#"><h5 class="card-title">${el.creator.name}</h5></a>
                         <p class="card-text">${el.content}</p>
                         <p class="card-text">${el.created_date}</p>
                     </div>
@@ -232,6 +238,7 @@ postForm.addEventListener('submit', e => {
     // Return false below stopped the duplicate from appearing when profile name was clicked in navbar
     // Perhaps not, commenting it out it still doesn't produce the duplicate
     // Idk why it started not producing duplicates, I'm going to restart laptop.
+    // Something else fixed it.
     //return false;
 });
 
@@ -313,42 +320,86 @@ $('#profile-name').click(function() {
     });
 });
 
-
+let otherProfileBe = false;
+// This is for a element .other-profile-id
 $(document).on('click', '.other-profile-id', function(e) {
-    e.preventDefault();
-    //e.stopPropagation();
+    
+    // e.stopPropogation(); allows for innerHTML to be updated on click
+    e.stopPropagation();
     //return false;
+    //$('#get-other-profile').empty();
     $('#get-other-profile').show();
     if ($('#main-body, #all-profile-objs').is(':visible')) {
         $('#main-body, #all-profile-objs').hide();
     }
-    //.data
     
+    //$('#get-other-profile').load(" #get-other-profile");
+    
+    //.data
+    //var profileId = $(this).attr('data-id');
+    //$('#get-other-profile').load(`other-profile/${profileId} #get-other-profile`);
     var profileId = $(this).data('id');
+    //$('#get-other-profile').load( `other-profile/${profileId} #get-other-profile`);
     console.log(profileId);
     alert(profileId)
 
     $.ajax({
         type: 'GET',
         url: `other-profile/${profileId}`,
+        cache: false,
         success: function(response) {
             console.log(response);
             const otherProfileData = response.single_profile_objs;
             const otherProfileInfo = response.single_profile_info;
             console.log(otherProfileData);
-            $('#get-other-profile').html(`
-            <p>Profile: ${otherProfileInfo.user}</p>
-            <p>Following: ${otherProfileInfo.following}</p>
-            <p>Followers: ${otherProfileInfo.followers}</p>
-            `);
-            /*
-            otherProfile.innerHTML += ` 
-            <p>Profile: ${otherProfileInfo.user}</p>
-            <p>Following: ${otherProfileInfo.following}</p>
-            <p>Followers: ${otherProfileInfo.followers}</p>
-            `
-            */
+
             
+            /*
+            if (!otherProfileBe) {
+            */
+            /*
+            if ($('#get-other-profile').is(':empty')) {
+            */
+                otherProfileStats.innerHTML +=`
+                <p>Profile: ${otherProfileInfo.user}</p>
+                <p>Following: ${otherProfileInfo.following}</p>
+                <p>Followers: ${otherProfileInfo.followers}</p>
+                `
+            
+
+            
+                otherProfileData.forEach(el => {
+                    otherProfilePosts.innerHTML += `
+                    <div class="card mb-2" style="width: 18rem;">
+                        <div class="card-body">
+                        <a class="other-profile-id" data-id="${el.creator.id}" href="#"><h5 class="card-title">${el.creator.name}</h5></a>
+                            <p class="card-text">${el.content}</p>
+                            <p class="card-text">${el.created_date}</p>
+                        </div>
+                        <div class="card-footer">
+                            <div class="row">
+                                <div class="col">
+                                    <a href="#" class="btn btn-primary">Details</a>
+                                </div>
+                                <div class="col">
+                                    <form class="like-unlike-forms" data-form-id="${el.id}">
+                                        <button href="#" class="btn btn-primary" id="like-unlike-${el.id}">${el.likes ? `Unlike (${el.count})` : `Like (${el.count})`}</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    `
+                });
+            /*
+            } else {
+                return false;
+               // $('#other-profile-posts').empty();
+            };
+            */
+            /*
+            otherProfileBe = true;
+            */
         },
         error: function(error) {
             console.log(error);
@@ -356,23 +407,10 @@ $(document).on('click', '.other-profile-id', function(e) {
     });
 });
 
-
 /*
-var profileId = $('.other-profile-id').data('id');
-console.log(profileId);
-
-$.ajax({
-    type: 'GET',
-    url: 'other-profile/' + profileId,
-    success: function(response) {
-        console.log(response);
-        const otherProfileData = response.profile_obj;
-        console.log("Other profile data..." + otherProfileData);
-    },
-    error: function(error) {
-        console.log(error);
-    }
-});
+function updateDiv() {
+    $('#get-other-profile').load(location.href + ' #get-other-div');
+}
 */
 
 /*
@@ -380,4 +418,5 @@ social network part 9 has delete functionality
 */
 
 
+//updateDiv();
 getData();

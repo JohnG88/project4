@@ -135,7 +135,7 @@ def get_other_profile(request, id):
         spd_item = {
             'id': spd.id,
             'content': spd.content,
-            'created_data': spd.created_date,
+            'created_date': spd.created_date,
             'likes': True if profile in spd.likes.all() else False,
             'count': spd.like_count,
             'creator': {'name': spd.creator.user.username, 'id': spd.creator.id}
