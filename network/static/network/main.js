@@ -288,7 +288,7 @@ $('#profile-name').click(function() {
                     profileObjs.innerHTML += `
                         <div class="card mb-2" style="width: 18rem;">
                         <div class="card-body">
-                            <a class="other-profile-id" data-id="${ele.creator.id}" href="#"><h5 class="card-title">${ele.creator.name}</h5></a>
+                            <h5 class="card-title">${ele.creator.name}</h5>
                             <p class="card-text">${ele.content}</p>
                             <p class="card-text">${ele.created_date}</p>
                         </div>
@@ -372,7 +372,7 @@ $(document).on('click', '.other-profile-id', function(e) {
                     otherProfilePosts.innerHTML += `
                     <div class="card mb-2" style="width: 18rem;">
                         <div class="card-body">
-                        <a class="other-profile-id" data-id="${el.creator.id}" href="#"><h5 class="card-title">${el.creator.name}</h5></a>
+                        <h5 class="card-title">${el.creator.name}</h5>
                             <p class="card-text">${el.content}</p>
                             <p class="card-text">${el.created_date}</p>
                         </div>
@@ -391,7 +391,8 @@ $(document).on('click', '.other-profile-id', function(e) {
                     </div>
                     `
                 });
-            /*
+            
+                /*
             } else {
                 return false;
                // $('#other-profile-posts').empty();
