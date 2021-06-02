@@ -157,6 +157,27 @@ def get_other_profile(request, id):
     #context = {'profile': profile}
     #return render(request, 'network.other_profile.html', context)
 
+def following_posts(request):
+    profile = Profile.objects.get(user=request.user)
+    followed_profiles = request.user.get_followed_profiles.all()
+    print(followed_profiles)
+    posts = Post.objects.filter(creator__in=followed_profiles).all()
+    print(posts)
+
+    followed_profiles_objs = []
+    for fposts in posts:
+        post_items = {
+            'id': fposts.id,
+            'content': fposts.content,
+            'created_date': fposts.created_date,
+            'likes': True if profile in fposts.likes.all() else False,
+            'count': fposts.like_count,
+            'creator': {'name': fposts.creator.user.username, 'id': fposts.creator.id}
+        }
+        followed_profiles_objs.append(post_items)
+
+    return JsonResponse({'followed_profiles_objs': followed_profiles_objs})
+
 def login_view(request):
     if request.method == "POST":
 

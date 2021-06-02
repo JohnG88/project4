@@ -19,6 +19,8 @@ const otherProfile = document.getElementById('get-other-profile');
 const otherProfilePosts = document.getElementById('other-profile-posts');
 const otherProfileStats = document.getElementById('other-profile-stats');
 
+const followPosts = document.getElementById('f-posts');
+
 /*
 $('#profile-name').click(function() {
     $('#all-profile-objs').show();
@@ -30,8 +32,8 @@ $('#profile-name').click(function() {
 
 $('#all-posts').click(function() {
     $('#main-body').show();
-    if ($('#all-profile-objs, #get-other-profile').is(':visible')) {
-        $('#all-profile-objs, #get-other-profile').hide();
+    if ($('#all-profile-objs, #get-other-profile, #f-posts').is(':visible')) {
+        $('#all-profile-objs, #get-other-profile, #f-posts').hide();
     }
 
     //$('#get-other-profile').load(" #get-other-profile");
@@ -39,6 +41,8 @@ $('#all-posts').click(function() {
     alertBox.innerHTML = '';
     otherProfileStats.innerHTML = '';
     otherProfilePosts.innerHTML = '';
+
+    followPosts.innerHTML = '';
 });
 /*
 - Needed to take off quotes from middle of ids of if statement it is fixed now.
@@ -259,9 +263,11 @@ let toFollowLoaded = false;
 $('#profile-name').click(function() {
 //$('#profile-name').click(function(e) {
     $('#all-profile-objs').show();
-    if ($('#main-body, #get-other-profile').is(':visible')) {
-        $('#main-body, #get-other-profile').hide();
+    if ($('#main-body, #get-other-profile, #f-posts').is(':visible')) {
+        $('#main-body, #get-other-profile, #f-posts').hide();
     }
+    
+    
 
     $.ajax({
         type: 'GET',
@@ -408,6 +414,51 @@ $(document).on('click', '.other-profile-id', function(e) {
     });
 });
 
+$('#follow_posts').click(function() {
+    $('#f-posts').show();
+    if ($('#main-body, #get-other-profile, #all-profile-objs').is(':visible')) {
+        $('#main-body, #get-other-profile, #all-profile-objs').hide();
+    }
+
+    $.ajax({
+        type: 'GET',
+        url: 'follow_posts',
+        success: function(response) {
+            console.log(response);
+            const fPosts = response.followed_profiles_objs;
+            console.log(fPosts)
+
+
+            fPosts.forEach(el => {
+                followPosts.innerHTML += `
+                <div class="card mb-2" style="width: 18rem;">
+                    <div class="card-body">
+                    <h5 class="card-title">${el.creator.name}</h5>
+                        <p class="card-text">${el.content}</p>
+                        <p class="card-text">${el.created_date}</p>
+                    </div>
+                    <div class="card-footer">
+                        <div class="row">
+                            <div class="col">
+                                <a href="#" class="btn btn-primary">Details</a>
+                            </div>
+                            <div class="col">
+                                <form class="like-unlike-forms" data-form-id="${el.id}">
+                                    <button href="#" class="btn btn-primary" id="like-unlike-${el.id}">${el.likes ? `Unlike (${el.count})` : `Like (${el.count})`}</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                `
+            });
+        },
+        error: function(error) {
+            console.log(error);
+        }
+    });
+});
+
 /*
 function updateDiv() {
     $('#get-other-profile').load(location.href + ' #get-other-div');
@@ -420,4 +471,6 @@ social network part 9 has delete functionality
 
 
 //updateDiv();
+
+
 getData();
