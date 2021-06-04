@@ -145,8 +145,9 @@ def get_other_profile(request, id):
     single_profile_info = {
         'id': profile.id,
         'user': profile.user.username,
-        'following': profile.followers.all().count(),
-        'followers': profile.following.all().count()
+        'followers': True if profile in profile.followers.all() else False,
+        'count': profile.get_following_count,
+        'following': profile.following.all().count()
     }
 
     #profile_obj = serializers.serialize('json', posts)
@@ -196,6 +197,21 @@ def login_view(request):
             })
     else:
         return render(request, "network/login.html")
+
+def update_follow(request):
+    user=request.user
+    profile = Profile.objects.get(user=user)
+    if request.is_ajax():
+        pk = request.POST.get('pk')
+        obj = Post.objects.get(pk=pk)
+        if profile in obj.followers.all():
+            followers = False
+            obj.followers.remove(profile)
+        else:
+            followers = True
+            obj.followers.add(profile)
+        #profile.save()
+        return JsonResponse({'followers': followers})
 
 
 def logout_view(request):

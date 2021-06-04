@@ -45,6 +45,10 @@ class Profile(models.Model):
 
     def get_following(self):
         return self.following.all()
+    
+    @property
+    def get_following_count(self):
+        return self.followers.all().count()
 
     
 

@@ -43,6 +43,8 @@ $('#all-posts').click(function() {
     otherProfilePosts.innerHTML = '';
 
     followPosts.innerHTML = '';
+    profileBox.innerHTML = '';
+    profileObjs.innerHTML = '';
 });
 /*
 - Needed to take off quotes from middle of ids of if statement it is fixed now.
@@ -108,6 +110,35 @@ const likeUnlikePosts = () => {
         })
     }))
 }
+
+/*
+const followUnfollowProfile = () => {
+    const followUnfollowForms = document.getElementById('follow-unfollow-forms');
+    followUnfollowForms.addEventListener('submit', e => {
+        e.preventDefault();
+        const idClicked = e.target.getAttribute('data-follow-id');
+        const btnClicked = document.getElementById(`follow-unfollow-${idClicked}`);
+        
+        
+
+        $.ajax({
+            type: 'POST',
+            url: 'update_follow',
+            data: {
+                'csrfmiddlewaretoken': csrftoken,
+                'pk': idClicked,
+            },
+            success: function(response) {
+                console.log(response);
+                btnClicked.textContent = response.followers ? `Unfollow` : `Follow`;
+            },
+            error: function(error) {
+                console.log(error);
+            }
+        });
+    });
+}
+*/
 
 let visible = 3
 
@@ -260,8 +291,10 @@ const handleAlerts = (type, msg) => {
 
 let toFollowLoaded = false;
 
-$('#profile-name').click(function() {
-//$('#profile-name').click(function(e) {
+//$('#profile-name').click(function() {
+$('#profile-name').click(function(e) {
+    //e.stopPropagation();
+    e.preventDefault();
     $('#all-profile-objs').show();
     if ($('#main-body, #get-other-profile, #f-posts').is(':visible')) {
         $('#main-body, #get-other-profile, #f-posts').hide();
@@ -279,9 +312,9 @@ $('#profile-name').click(function() {
             console.log(pfData);
             console.log(posts)
 
-            
+            /*
             if (!toFollowLoaded) {
-            
+            */
 
                 
                 profileBox.innerHTML += ` 
@@ -314,11 +347,11 @@ $('#profile-name').click(function() {
                     `
                     
                 });
-            
+            /*
             }
             
             toFollowLoaded = true;
-            
+            */
         },
         error: function(error) {
             console.log(error);
@@ -331,7 +364,7 @@ let otherProfileBe = false;
 $(document).on('click', '.other-profile-id', function(e) {
     
     // e.stopPropogation(); allows for innerHTML to be updated on click
-    e.stopPropagation();
+    //e.stopPropagation();
     //return false;
     //$('#get-other-profile').empty();
     $('#get-other-profile').show();
@@ -368,8 +401,12 @@ $(document).on('click', '.other-profile-id', function(e) {
             */
                 otherProfileStats.innerHTML +=`
                 <p>Profile: ${otherProfileInfo.user}</p>
-                <p>Following: ${otherProfileInfo.following}</p>
-                <p>Followers: ${otherProfileInfo.followers}</p>
+                <p>Following: ${otherProfileInfo.count}</p>
+                <p>Followers: ${otherProfileInfo.following}</p>
+
+                <form id="follow-unfollow-forms" data-follow-id="${otherProfileInfo.id}>
+                    <button href="#" class="btn btn-primary" id="follow-unfollow-${otherProfileInfo.id}">${otherProfileInfo.followers ? `Unfollow` : `Follow`}</button>
+                </form>
                 `
             
 
@@ -397,6 +434,7 @@ $(document).on('click', '.other-profile-id', function(e) {
                     </div>
                     `
                 });
+                //followUnfollowProfile();
             
                 /*
             } else {
@@ -419,6 +457,9 @@ $('#follow_posts').click(function() {
     if ($('#main-body, #get-other-profile, #all-profile-objs').is(':visible')) {
         $('#main-body, #get-other-profile, #all-profile-objs').hide();
     }
+
+    profileBox.innerHTML = '';
+    profileObjs.innerHTML = '';
 
     $.ajax({
         type: 'GET',
@@ -458,6 +499,8 @@ $('#follow_posts').click(function() {
         }
     });
 });
+
+
 
 /*
 function updateDiv() {
