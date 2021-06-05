@@ -145,7 +145,7 @@ def get_other_profile(request, id):
     single_profile_info = {
         'id': profile.id,
         'user': profile.user.username,
-        'followers': True if profile.followers.all() else False,
+        'followers': True if profile in request.user.get_followed_profiles.all() else False,
         'count': profile.get_following_count,
         'following': profile.following.all().count()
     }
