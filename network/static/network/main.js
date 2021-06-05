@@ -118,6 +118,7 @@ const followUnfollowProfile = () => {
         e.preventDefault();
         const idClicked = e.target.getAttribute('data-follow-id');
         const btnClicked = document.getElementById(`follow-unfollow-${idClicked}`);
+        const changeCount = document.getElementById('change-count');
         console.log(idClicked);
         console.log(btnClicked);
         
@@ -131,6 +132,8 @@ const followUnfollowProfile = () => {
             success: function(response) {
                 console.log(response);
                 btnClicked.textContent = response.followers ? `Unfollow` : `Follow`;
+
+                changeCount.textContent = response.count;
             },
             error: function(error) {
                 console.log(error);
@@ -401,9 +404,9 @@ $(document).on('click', '.other-profile-id', function(e) {
             if ($('#get-other-profile').is(':empty')) {
             */
                 otherProfileStats.innerHTML +=`
-                <p>Profile: ${otherProfileInfo.user}</p>
-                <p>Following: ${otherProfileInfo.count}</p>
-                <p>Followers: ${otherProfileInfo.following}</p>
+                <div>Profile: ${otherProfileInfo.user}</div>
+                <div>Following: <span id="change-count">${otherProfileInfo.count}</span></div>
+                <div>Followers: ${otherProfileInfo.following}</div>
 
                 <form id="follow-unfollow-form" data-follow-id="${otherProfileInfo.id}">
                     <button href="#" class="btn btn-primary" id="follow-unfollow-${otherProfileInfo.id}">${otherProfileInfo.followers ? `Unfollow` : `Follow`}</button>

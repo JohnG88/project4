@@ -223,7 +223,7 @@ def update_follow(request, id):
             profile.followers.add(user)
         #profile.save()
     """
-    return JsonResponse({'followers': followers})
+    return JsonResponse({'followers': followers, 'count': request.user.get_followed_profiles.all().count()})
 
 
 def logout_view(request):
