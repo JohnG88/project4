@@ -145,7 +145,7 @@ def get_other_profile(request, id):
     single_profile_info = {
         'id': profile.id,
         'user': profile.user.username,
-        'followers': True if profile in profile.followers.all() else False,
+        'followers': True if profile.followers.all() else False,
         'count': profile.get_following_count,
         'following': profile.following.all().count()
     }
@@ -198,20 +198,32 @@ def login_view(request):
     else:
         return render(request, "network/login.html")
 
-def update_follow(request):
+def update_follow(request, id):
+    profile = Profile.objects.get(id=id)
+    if profile in request.user.get_followed_profiles.all():
+        followers = False
+        profile.followers.remove(request.user)
+    else:
+        followers = True
+        profile.followers.add(request.user)
+    profile.save()
+
+    # Below is a mixture of a project i copied and pyplane tutorial, it makes the user follow itself
+    """
     user=request.user
     profile = Profile.objects.get(user=user)
-    if request.is_ajax():
+    if request.is_ajax:
         pk = request.POST.get('pk')
-        obj = Post.objects.get(pk=pk)
-        if profile in obj.followers.all():
+        profiles = Profile.objects.get(id=pk)
+        if profiles in profile.followers.all():
             followers = False
-            obj.followers.remove(profile)
+            profile.followers.remove(user)
         else:
             followers = True
-            obj.followers.add(profile)
+            profile.followers.add(user)
         #profile.save()
-        return JsonResponse({'followers': followers})
+    """
+    return JsonResponse({'followers': followers})
 
 
 def logout_view(request):

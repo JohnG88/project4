@@ -89,7 +89,7 @@ const csrftoken = getCookie('csrftoken');
 const likeUnlikePosts = () => {
     const likeUnlikeForms = [...document.getElementsByClassName('like-unlike-forms')]
     likeUnlikeForms.forEach(form => form.addEventListener('submit', e => {
-        e.preventDefault();
+        //e.preventDefault();
         const clickedId = e.target.getAttribute('data-form-id');
         const clickedBtn = document.getElementById(`like-unlike-${clickedId}`);
 
@@ -111,19 +111,19 @@ const likeUnlikePosts = () => {
     }))
 }
 
-/*
+
 const followUnfollowProfile = () => {
-    const followUnfollowForms = document.getElementById('follow-unfollow-forms');
-    followUnfollowForms.addEventListener('submit', e => {
+    //const followUnfollowForm = [...document.getElementById('follow-unfollow-form')];
+    $(document).on('submit', '#follow-unfollow-form', function(e) {
         e.preventDefault();
         const idClicked = e.target.getAttribute('data-follow-id');
         const btnClicked = document.getElementById(`follow-unfollow-${idClicked}`);
+        console.log(idClicked);
+        console.log(btnClicked);
         
-        
-
         $.ajax({
             type: 'POST',
-            url: 'update_follow',
+            url: `update_follow/${idClicked}`,
             data: {
                 'csrfmiddlewaretoken': csrftoken,
                 'pk': idClicked,
@@ -138,7 +138,7 @@ const followUnfollowProfile = () => {
         });
     });
 }
-*/
+
 
 let visible = 3
 
@@ -364,7 +364,7 @@ let otherProfileBe = false;
 $(document).on('click', '.other-profile-id', function(e) {
     
     // e.stopPropogation(); allows for innerHTML to be updated on click
-    //e.stopPropagation();
+    e.stopPropagation();
     //return false;
     //$('#get-other-profile').empty();
     $('#get-other-profile').show();
@@ -391,6 +391,7 @@ $(document).on('click', '.other-profile-id', function(e) {
             const otherProfileData = response.single_profile_objs;
             const otherProfileInfo = response.single_profile_info;
             console.log(otherProfileData);
+            console.log(otherProfileInfo);
 
             
             /*
@@ -404,7 +405,7 @@ $(document).on('click', '.other-profile-id', function(e) {
                 <p>Following: ${otherProfileInfo.count}</p>
                 <p>Followers: ${otherProfileInfo.following}</p>
 
-                <form id="follow-unfollow-forms" data-follow-id="${otherProfileInfo.id}>
+                <form id="follow-unfollow-form" data-follow-id="${otherProfileInfo.id}">
                     <button href="#" class="btn btn-primary" id="follow-unfollow-${otherProfileInfo.id}">${otherProfileInfo.followers ? `Unfollow` : `Follow`}</button>
                 </form>
                 `
@@ -434,7 +435,7 @@ $(document).on('click', '.other-profile-id', function(e) {
                     </div>
                     `
                 });
-                //followUnfollowProfile();
+                followUnfollowProfile()
             
                 /*
             } else {
