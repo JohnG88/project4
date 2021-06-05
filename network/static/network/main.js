@@ -111,12 +111,13 @@ const likeUnlikePosts = () => {
     }))
 }
 
-
+// To fix the multiple form submissions, .off('submit').on('submit', ...), works
+// On stackoverflow, it says: To only remove registered 'click' event handlers
 const followUnfollowProfile = () => {
     //const followUnfollowForm = [...document.getElementById('follow-unfollow-form')];
-    $(document).on('submit', '#follow-unfollow-form', function(e) {
+    $(document).off('submit').on('submit', '#follow-unfollow-form', function(e) {
         e.preventDefault();
-        e.stopPropagation();
+        //e.stopPropagation();
         const idClicked = e.target.getAttribute('data-follow-id');
         const btnClicked = document.getElementById(`follow-unfollow-${idClicked}`);
         const changeCount = document.getElementById('change-count');
@@ -186,7 +187,7 @@ const getData = () => {
                 </div>
                 `
             });
-            likeUnlikePosts()
+            likeUnlikePosts();
             // Line below gets posts_ser from django view
             //const data = JSON.parse(response.posts_ser);
             //console.log(data);
@@ -272,7 +273,7 @@ postForm.addEventListener('submit', e => {
         </div> 
         `)
         */
-            likeUnlikePosts()
+            likeUnlikePosts();
             handleAlerts('success', 'New post added...')
             postForm.reset()
         },
@@ -300,12 +301,13 @@ const handleAlerts = (type, msg) => {
 // .removeClass
 
 
-let toFollowLoaded = false;
+//let toFollowLoaded = false;
 
 //$('#profile-name').click(function() {
 $('#profile-name').click(function(e) {
     //e.stopPropagation();
     e.preventDefault();
+    //e.stopPropagation();
     $('#all-profile-objs').show();
     if ($('#main-body, #get-other-profile, #f-posts').is(':visible')) {
         $('#main-body, #get-other-profile, #f-posts').hide();
@@ -375,7 +377,8 @@ $('#profile-name').click(function(e) {
 $(document).on('click', '.other-profile-id', function(e) {
     
     // e.stopPropogation(); allows for innerHTML to be updated on click
-    //e.stopPropagation();
+    e.stopPropagation();
+    e.preventDefault();
     //return false;
     //$('#get-other-profile').empty();
     $('#get-other-profile').show();
