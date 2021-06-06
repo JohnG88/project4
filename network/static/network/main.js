@@ -338,7 +338,7 @@ $('#profile-name').click(function(e) {
                 profileBox.innerHTML += ` 
                 <p>Profile: ${pfData.user}</p>
                 <p>Followers: ${pfData.followers}</p>
-                <p>Following: 0</p>
+                <p>Following: ${pfData.following}</p>
                 `
                 
                 posts.forEach(ele => {
@@ -422,12 +422,17 @@ $(document).off('click').on('click', '.other-profile-id', function(e) {
                 otherProfileStats.innerHTML +=`
                 <div>Profile: ${otherProfileInfo.user}</div>
                 <div>Followers: <span id="change-count">${otherProfileInfo.count}</span></div>
-                <div>Followers: 0</div>
+                <div>Following: ${otherProfileInfo.following}</div>
 
                 <form id="follow-unfollow-form" data-follow-id="${otherProfileInfo.id}">
                     <button href="#" class="btn btn-primary" id="follow-unfollow-${otherProfileInfo.id}">${otherProfileInfo.followers ? `Unfollow` : `Follow`}</button>
                 </form>
                 `
+                /*
+                Donkey follows 2, followers 3
+                Wango follows 2, followers 2
+                Man follows 2, followers 3
+                */
             
 
             

@@ -71,7 +71,7 @@ def getAjax(request, num_posts):
             'created_date': p.created_date,
             'likes': True if profile in p.likes.all() else False,
             'count': p.like_count,
-            'creator': {'name': p.creator.user.username, 'id': p.creator.id}
+            'creator': {'name': p.creator.user.username, 'id': p.creator.user.id}
             }
             data.append(item)
         # IDK how this worked, maybe because the data has been serialized from models because in other projects the p.creator would return an object and when you would try oop it would say the foreignkey field was not JSON serializable.
@@ -119,14 +119,14 @@ def profile_page(request):
     profile_info = {
         'id': profile.id,
         'user': profile.user.username,
-        'followers': profile.followers.all().count(),
-        #'following': profile.following.all().count()
+        'followers': profile.get_following_count,
+        'following': request.user.get_followed_profiles.all().count(),
     }
     return JsonResponse({'data': profile_info, 'posts_obj': posts_data})
 
 def get_other_profile(request, id):
-    #user = User.objects.get(username=username)
-    profile = Profile.objects.get(id=id)
+    user = User.objects.get(id=id)
+    profile = Profile.objects.get(user=user)
     print(profile)
     posts = Post.objects.filter(creator=profile)
     
@@ -147,9 +147,14 @@ def get_other_profile(request, id):
         'user': profile.user.username,
         'followers': True if profile in request.user.get_followed_profiles.all() else False,
         'count': profile.get_following_count,
-        #'following': profile.following.all().count()
+        'following': user.get_followed_profiles.all().count(),
     }
-
+    """
+    Man is follwed by Donkey, Wango, Comal. Man follows Wango, Donkey
+    Wango is followed by Donkey, Man. Wango follows Man, Donkey
+    Donkey is followd by Wango, Man, Comal. Donkey follows Man, Wango, Comal
+    Comal is followed by Donkey. Comal follows Man, Donkey
+    """
     #profile_obj = serializers.serialize('json', posts)
     #print(profile_obj)
 

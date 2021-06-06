@@ -43,12 +43,34 @@ class Profile(models.Model):
 
     # objects = ProfileManager()
 
+    def get_followers(self):
+        return self.followers.all()
     
     
     @property
     def get_following_count(self):
         return self.followers.all().count()
 
+    """
+    def get_followers_list(self):
+        # Get all profiles
+        qs = Profile.objects.all()
+        # Create followers list
+        followers_list = []
+        # For loop qs:
+        for profile in qs:
+            # Checking to see if we are in profile following list
+            if profile.get_followers():
+                followers_list.append(profile)
+            return followers_list
+    """
+    @property
+    def get_followers_list(self):
+        pass
+
+    @property
+    def followers_count(self):
+        return len(self.get_followers_list())
     
 
     """
