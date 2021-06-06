@@ -119,8 +119,8 @@ def profile_page(request):
     profile_info = {
         'id': profile.id,
         'user': profile.user.username,
-        'following': profile.followers.all().count(),
-        'followers': profile.following.all().count()
+        'followers': profile.followers.all().count(),
+        #'following': profile.following.all().count()
     }
     return JsonResponse({'data': profile_info, 'posts_obj': posts_data})
 
@@ -147,7 +147,7 @@ def get_other_profile(request, id):
         'user': profile.user.username,
         'followers': True if profile in request.user.get_followed_profiles.all() else False,
         'count': profile.get_following_count,
-        'following': profile.following.all().count()
+        #'following': profile.following.all().count()
     }
 
     #profile_obj = serializers.serialize('json', posts)
@@ -223,7 +223,9 @@ def update_follow(request, id):
             profile.followers.add(user)
         #profile.save()
     """
-    return JsonResponse({'followers': followers, 'count': request.user.get_followed_profiles.all().count()})
+    # request.user.get_followed_profiles.all().count(), this lin was to get counts but i believe it as counting nothing
+
+    return JsonResponse({'followers': followers, 'count': profile.get_following_count})
 
 
 def logout_view(request):

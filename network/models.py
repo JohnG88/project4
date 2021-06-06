@@ -39,12 +39,11 @@ class ProfileManager(models.Manager):
 class Profile(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     followers = models.ManyToManyField(User, blank=True, related_name="get_followed_profiles")
-    following = models.ManyToManyField(User, blank=True, related_name="get_following_profiles")
+    #following = models.ManyToManyField(User, blank=True, related_name="get_following_profiles")
 
     # objects = ProfileManager()
 
-    def get_following(self):
-        return self.following.all()
+    
     
     @property
     def get_following_count(self):

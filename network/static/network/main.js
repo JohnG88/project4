@@ -117,12 +117,15 @@ const followUnfollowProfile = () => {
     //const followUnfollowForm = [...document.getElementById('follow-unfollow-form')];
     $(document).off('submit').on('submit', '#follow-unfollow-form', function(e) {
         e.preventDefault();
-        //e.stopPropagation();
-        const idClicked = e.target.getAttribute('data-follow-id');
+        e.stopPropagation();
+        //e.target., this goes before getAttribute, trying to tweak some things around
+        //const idClicked = e.target.getAttribute('data-follow-id');
+        const idClicked = $(this).data('follow-id');
         const btnClicked = document.getElementById(`follow-unfollow-${idClicked}`);
         const changeCount = document.getElementById('change-count');
         console.log(idClicked);
         console.log(btnClicked);
+        console.log(changeCount);
         
         $.ajax({
             type: 'POST',
@@ -137,12 +140,14 @@ const followUnfollowProfile = () => {
                 changeCount.textContent = response.count;
 
                 /*
-                if(btnClicked === 'Unfollow') {
+                if(btnClicked === `Unfollow`) {
                     changeCount.textContent = response.count - 1;
                 } else {
                     changeCount.textContent = response.count + 1;
                 }
                 */
+                //changeCount.textContent = response.count;
+                
             },
             error: function(error) {
                 console.log(error);
@@ -332,8 +337,8 @@ $('#profile-name').click(function(e) {
                 
                 profileBox.innerHTML += ` 
                 <p>Profile: ${pfData.user}</p>
-                <p>Following: ${pfData.following}</p>
                 <p>Followers: ${pfData.followers}</p>
+                <p>Following: 0</p>
                 `
                 
                 posts.forEach(ele => {
@@ -374,7 +379,7 @@ $('#profile-name').click(function(e) {
 
 //let otherProfileBe = false;
 // This is for a element .other-profile-id
-$(document).on('click', '.other-profile-id', function(e) {
+$(document).off('click').on('click', '.other-profile-id', function(e) {
     
     // e.stopPropogation(); allows for innerHTML to be updated on click
     e.stopPropagation();
@@ -416,8 +421,8 @@ $(document).on('click', '.other-profile-id', function(e) {
             */
                 otherProfileStats.innerHTML +=`
                 <div>Profile: ${otherProfileInfo.user}</div>
-                <div>Following: <span id="change-count">${otherProfileInfo.count}</span></div>
-                <div>Followers: ${otherProfileInfo.following}</div>
+                <div>Followers: <span id="change-count">${otherProfileInfo.count}</span></div>
+                <div>Followers: 0</div>
 
                 <form id="follow-unfollow-form" data-follow-id="${otherProfileInfo.id}">
                     <button href="#" class="btn btn-primary" id="follow-unfollow-${otherProfileInfo.id}">${otherProfileInfo.followers ? `Unfollow` : `Follow`}</button>
