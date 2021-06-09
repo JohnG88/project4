@@ -112,12 +112,12 @@ def profile_page(request):
             'created_date': pd.created_date,
             'likes': True if profile in pd.likes.all() else False,
             'count': pd.like_count,
-            'creator': {'name': pd.creator.user.username, 'id': pd.creator.id}
+            'creator': {'name': pd.creator.user.username, 'id': pd.creator.user.id}
         }
         posts_data.append(p_item)
 
     profile_info = {
-        'id': profile.id,
+        'id': user.id,
         'user': profile.user.username,
         'followers': profile.get_following_count,
         'following': request.user.get_followed_profiles.all().count(),
@@ -138,12 +138,12 @@ def get_other_profile(request, id):
             'created_date': spd.created_date,
             'likes': True if profile in spd.likes.all() else False,
             'count': spd.like_count,
-            'creator': {'name': spd.creator.user.username, 'id': spd.creator.id}
+            'creator': {'name': spd.creator.user.username, 'id': spd.creator.user.id}
         }
         single_profile_objs.append(spd_item)
 
     single_profile_info = {
-        'id': profile.id,
+        'id': user.id,
         'user': profile.user.username,
         'followers': True if profile in request.user.get_followed_profiles.all() else False,
         'count': profile.get_following_count,
@@ -155,6 +155,26 @@ def get_other_profile(request, id):
     Donkey is followd by Wango, Man, Comal. Donkey follows Man, Wango, Comal
     Comal is followed by Donkey. Comal follows Man, Donkey
     """
+
+    """
+    This is for investing purposes:
+        HRZN: Horizon Technology Finance Corp
+        QYLD: Global X NASDAQ 100 Covered call ETF
+        PESC: Prospect Capitol Corp
+        ACP: Aberdeen Income Credit Strategies Fund
+        SBR: Sabine Royalty Trust
+        DX: Dynex Capitol
+        PCF: High Income Securities Fund
+
+
+        How To look for monthly dividend stocks:
+            1: Payout Ratio, P.E., annual dividend amount/ earnings per share
+            2 Total return
+            3: dividend yield is (12(months)/ by stock price)
+            4. Check total return of stock
+
+    """
+
     #profile_obj = serializers.serialize('json', posts)
     #print(profile_obj)
 
@@ -178,7 +198,7 @@ def following_posts(request):
             'created_date': fposts.created_date,
             'likes': True if profile in fposts.likes.all() else False,
             'count': fposts.like_count,
-            'creator': {'name': fposts.creator.user.username, 'id': fposts.creator.id}
+            'creator': {'name': fposts.creator.user.username, 'id': fposts.creator.user.id}
         }
         followed_profiles_objs.append(post_items)
 
@@ -204,7 +224,8 @@ def login_view(request):
         return render(request, "network/login.html")
 
 def update_follow(request, id):
-    profile = Profile.objects.get(id=id)
+    user = User.objects.get(id=id)
+    profile = Profile.objects.get(user=user)
     if profile in request.user.get_followed_profiles.all():
         followers = False
         profile.followers.remove(request.user)

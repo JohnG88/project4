@@ -1,3 +1,5 @@
+const user_id = JSON.parse(document.getElementById('user_id').textContent);
+console.log(user_id)
 const postsBox = document.getElementById('post-list');
 const loadBtn = document.getElementById('load-btn');
 const endBox = document.getElementById('end-box');
@@ -11,6 +13,8 @@ const profileBox = document.getElementById('profile-info');
 const profileObjs = document.getElementById('profile-posts');
 
 const profileName = document.getElementById('profile-name');
+const profileNameAttr = document.getElementById('profile-name').getAttribute('data-user-id');
+console.log('Current user id ' + profileNameAttr);
 const mainBody = document.getElementById('main-body');
 
 const allPosts = document.getElementById('all-posts');
@@ -20,6 +24,8 @@ const otherProfilePosts = document.getElementById('other-profile-posts');
 const otherProfileStats = document.getElementById('other-profile-stats');
 
 const followPosts = document.getElementById('f-posts');
+
+
 
 /*
 $('#profile-name').click(function() {
@@ -127,6 +133,13 @@ const followUnfollowProfile = () => {
         console.log(btnClicked);
         console.log(changeCount);
         
+        /*
+        if(idClicked === profileNameAttr) {
+            $('#follow-unfollow-form').hide();
+        } else {
+            $('#follow-unfollow-form').show();
+        }
+        */
         $.ajax({
             type: 'POST',
             url: `update_follow/${idClicked}`,
@@ -138,6 +151,9 @@ const followUnfollowProfile = () => {
                 console.log(response);
                 btnClicked.textContent = response.followers ? `Unfollow` : `Follow`;
                 changeCount.textContent = response.count;
+
+                
+                
 
                 /*
                 if(btnClicked === `Unfollow`) {
@@ -418,16 +434,22 @@ $(document).off('click').on('click', '.other-profile-id', function(e) {
             */
             /*
             if ($('#get-other-profile').is(':empty')) {
+
             */
+                
+
                 otherProfileStats.innerHTML +=`
                 <div>Profile: ${otherProfileInfo.user}</div>
                 <div>Followers: <span id="change-count">${otherProfileInfo.count}</span></div>
                 <div>Following: ${otherProfileInfo.following}</div>
-
+            
+                
                 <form id="follow-unfollow-form" data-follow-id="${otherProfileInfo.id}">
                     <button href="#" class="btn btn-primary" id="follow-unfollow-${otherProfileInfo.id}">${otherProfileInfo.followers ? `Unfollow` : `Follow`}</button>
                 </form>
                 `
+
+                
                 /*
                 Donkey follows 2, followers 3
                 Wango follows 2, followers 2
@@ -459,6 +481,12 @@ $(document).off('click').on('click', '.other-profile-id', function(e) {
                     </div>
                     `
                 });
+                if(otherProfileInfo.id === user_id) {
+                    $('#follow-unfollow-form').hide();
+                } else {
+                    $('#follow-unfollow-form').show();
+                };
+                
                 followUnfollowProfile();
             
                 /*
