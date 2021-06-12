@@ -25,6 +25,11 @@ const otherProfileStats = document.getElementById('other-profile-stats');
 
 const followPosts = document.getElementById('f-posts');
 
+const modalBody = document.getElementById('m-body');
+const modalBodyLabel = document.getElementById('exampleModalLabel');
+
+
+
 
 
 /*
@@ -91,6 +96,7 @@ function getCookie(name) {
     return cookieValue;
 }
 const csrftoken = getCookie('csrftoken');
+
 
 const likeUnlikePosts = () => {
     const likeUnlikeForms = [...document.getElementsByClassName('like-unlike-forms')]
@@ -173,6 +179,37 @@ const followUnfollowProfile = () => {
 }
 
 
+const editPost = () => {
+    $(document).on('click', '.ePost', function(e) {
+        e.preventDefault();
+        var postId = $(this).data('post-id')
+        console.log('This is post id ' + postId);
+        
+        
+        
+        /*
+        modalBody.innerHTML = `
+                <input type="text" id="post-input">
+            `
+        */
+
+        
+        /*
+        $.ajax({
+            type: 'GET',
+            url = `update-post/${postId}`,
+            success: function(response) {
+
+            },
+            error: function(error) {
+                console.log(error);
+            }
+        
+        });
+        */
+    });
+};
+
 let visible = 3
 
 const getData = () => {
@@ -184,7 +221,10 @@ const getData = () => {
             console.log(response);
             // The variable data below is assigned to the response of above and data from django view getAjax
             const data = response.data;
-            console.log(data);
+            console.log('This is 3 per click posts ' + data);
+            const item = response.item;
+            console.log('This is for item ' + item);
+
             data.forEach(el => {
                 postsBox.innerHTML += `
                 <div class="card mb-2" style="width: 18rem;">
@@ -196,7 +236,7 @@ const getData = () => {
                     <div class="card-footer">
                         <div class="row">
                             <div class="col">
-                                <a href="#" class="btn btn-primary">Details</a>
+                                <a href="#" id="edit-btn" class="btn btn-primary ePost" data-toggle="modal" data-target="#exampleModal" data-post-id="${el.id}">Edit</a>
                             </div>
                             <div class="col">
                                 <form class="like-unlike-forms" data-form-id="${el.id}">
@@ -207,8 +247,15 @@ const getData = () => {
                     </div>
                 </div>
                 `
+
+
+                
             });
+                
+            
+            editPost();
             likeUnlikePosts();
+            
             // Line below gets posts_ser from django view
             //const data = JSON.parse(response.posts_ser);
             //console.log(data);
@@ -260,7 +307,7 @@ postForm.addEventListener('submit', e => {
                     <div class="card-footer">
                         <div class="row">
                             <div class="col">
-                                <a href="#" class="btn btn-primary">Details</a>
+                                <a href="#" class="btn btn-primary ePost" data-toggle="modal" data-target="#exampleModal" data-post-id="${data.id}">Edit</a>
                             </div>
                             <div class="col">
                                 <form class="like-unlike-forms" data-form-id="${data.id}">
@@ -271,6 +318,7 @@ postForm.addEventListener('submit', e => {
                     </div>
                 </div>
             `)
+            
             /*
             profileObjs.insertAdjacentHTML('afterbegin', `
             <div class="card mb-2" style="width: 18rem;">
@@ -295,6 +343,7 @@ postForm.addEventListener('submit', e => {
         `)
         */
             likeUnlikePosts();
+            editPost();
             handleAlerts('success', 'New post added...')
             postForm.reset()
         },

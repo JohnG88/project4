@@ -26,7 +26,7 @@ def index(request):
                 #'likes': True if profile in p.likes.all() else False,
                 #'count': p.like_count,
                 'creator': item_form.creator.user.username,
-                'creator_id': item_form.creator.id,
+                'creator_id': item_form.creator.user.id,
             })
     
     """post = Post.objects.all()
@@ -123,6 +123,21 @@ def profile_page(request):
         'following': request.user.get_followed_profiles.all().count(),
     }
     return JsonResponse({'data': profile_info, 'posts_obj': posts_data})
+
+def edit_post(request, id):
+    post = Post.objects.get(id=id)
+    if request.method == 'POST':
+        e_form = PostForm(request.POST, instance=post)
+        if e_form.is_valid():
+            e_form.save()
+            return JsonResponse({
+                'id': e_form.id,
+                'content': e_form.content,
+                'created_date': e_form.created_date,
+                'creator': e_form.creator.user.username,
+                'creator_id': e_form.creator.user.id,
+            })
+
 
 def get_other_profile(request, id):
     user = User.objects.get(id=id)
