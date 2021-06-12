@@ -178,42 +178,41 @@ const followUnfollowProfile = () => {
     });
 }
 
-
+// Used .one here because it was firing multiple times whenedit button was clicked
 const editPost = () => {
-    $(document).on('click', '.ePost', function(e) {
+    $(document).one('click', '.ePost', function(e) {
         e.preventDefault();
         var postId = $(this).data('post-id')
         console.log('This is post id ' + postId);
-        
-        
-        
-        /*
-        modalBody.innerHTML = `
-                <input type="text" id="post-input">
-            `
-        */
 
         
-        /*
+        
         $.ajax({
             type: 'GET',
-            url = `update-post/${postId}`,
-            success: function(response) {
+            url: `update-post/${postId}`,
+            success: function(postData) {
+                console.log('This is post data ' + postData);
+                modalBodyLabel.innerHTML = `
+                    ${postData.creator}
+                `
 
+                modalBody.innerHTML = `
+                    <input type="text" class="input-id">
+                `
+                $('.input-id').val(`${postData.content}`)
             },
             error: function(error) {
                 console.log(error);
             }
         
         });
-        */
+        
     });
 };
 
 let visible = 3
 
 const getData = () => {
-
     $.ajax({
         type: 'GET',
         url: `getAjax/${visible}`,
@@ -222,8 +221,6 @@ const getData = () => {
             // The variable data below is assigned to the response of above and data from django view getAjax
             const data = response.data;
             console.log('This is 3 per click posts ' + data);
-            const item = response.item;
-            console.log('This is for item ' + item);
 
             data.forEach(el => {
                 postsBox.innerHTML += `
@@ -236,7 +233,7 @@ const getData = () => {
                     <div class="card-footer">
                         <div class="row">
                             <div class="col">
-                                <a href="#" id="edit-btn" class="btn btn-primary ePost" data-toggle="modal" data-target="#exampleModal" data-post-id="${el.id}">Edit</a>
+                                <a href="#" id="editP" class="btn btn-primary ePost" data-toggle="modal" data-target="#exampleModal" data-post-id="${el.id}">Edit</a>
                             </div>
                             <div class="col">
                                 <form class="like-unlike-forms" data-form-id="${el.id}">
@@ -307,7 +304,7 @@ postForm.addEventListener('submit', e => {
                     <div class="card-footer">
                         <div class="row">
                             <div class="col">
-                                <a href="#" class="btn btn-primary ePost" data-toggle="modal" data-target="#exampleModal" data-post-id="${data.id}">Edit</a>
+                                <a href="#" id="editP" class="btn btn-primary ePost" data-toggle="modal" data-target="#exampleModal" data-post-id="${data.id}">Edit</a>
                             </div>
                             <div class="col">
                                 <form class="like-unlike-forms" data-form-id="${data.id}">

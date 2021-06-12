@@ -126,17 +126,20 @@ def profile_page(request):
 
 def edit_post(request, id):
     post = Post.objects.get(id=id)
+    '''
     if request.method == 'POST':
         e_form = PostForm(request.POST, instance=post)
         if e_form.is_valid():
             e_form.save()
-            return JsonResponse({
-                'id': e_form.id,
-                'content': e_form.content,
-                'created_date': e_form.created_date,
-                'creator': e_form.creator.user.username,
-                'creator_id': e_form.creator.user.id,
-            })
+    '''
+        
+    return JsonResponse({
+            'id': post.id,
+            'content': post.content,
+            'created_date': post.created_date,
+            'creator': post.creator.user.username,
+            'creator_id': post.creator.user.id,
+    })
 
 
 def get_other_profile(request, id):
