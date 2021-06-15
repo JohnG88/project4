@@ -5,6 +5,7 @@ const loadBtn = document.getElementById('load-btn');
 const endBox = document.getElementById('end-box');
 
 const postForm = document.getElementById('post-form');
+const editPostForm = document.getElementById('edit-post-form');
 const title = document.getElementById('id_content');
 const alertBox = document.getElementById('alert-box');
 
@@ -27,6 +28,7 @@ const followPosts = document.getElementById('f-posts');
 
 const modalBody = document.getElementById('m-body');
 const modalBodyLabel = document.getElementById('exampleModalLabel');
+const modalSubmitFooter = document.getElementById('submit-footer')
 
 
 
@@ -178,10 +180,16 @@ const followUnfollowProfile = () => {
     });
 }
 
-// Used .one here because it was firing multiple times whenedit button was clicked
-const editPost = () => {
-    $(document).one('click', '.ePost', function(e) {
+// Used .one here because it was firing multiple times when edit button was clicked.
+// .one only works to stop button from firing multiple times, bt never updates.
+// Adding  e.stopImmediatePropagation(); and return false; at end of error function works for it to not fire multiple times but also lets update, maybe because it is a function in a function.
+
+const getPost = () => {
+    //$('.ePost').click(function(e) {
+    $(document).on('click', '.ePost', function(e) {
+    //editPostForm.addEventListener('submit', e => {
         e.preventDefault();
+        e.stopPropagation();
         var postId = $(this).data('post-id')
         console.log('This is post id ' + postId);
 
@@ -189,26 +197,63 @@ const editPost = () => {
         
         $.ajax({
             type: 'GET',
-            url: `update-post/${postId}`,
+            url: `get_post/${postId}`,
             success: function(postData) {
-                console.log('This is post data ' + postData);
+                console.log('This is post data ' + postData.id);
                 modalBodyLabel.innerHTML = `
                     ${postData.creator}
                 `
-
+                /*
                 modalBody.innerHTML = `
-                    <input type="text" class="input-id">
+                    <input type="text" class="input-id" name="edit-content-input">
                 `
+                */
                 $('.input-id').val(`${postData.content}`)
+
+                modalSubmitFooter.innerHTML += `
+                <input id="submit-footer-btn" type="submit" class="btn btn-primary save-edit-button" data-id="${postData.id}" value="Save Edit">
+                `
+                editOnlyPost();
             },
             error: function(error) {
                 console.log(error);
             }
         
         });
+        e.stopImmediatePropagation();
+        return false;
         
     });
 };
+
+const editOnlyPost = () => {
+    //$(document).on('submit', '.save-edit-button', function(e) {
+    editPostForm.addEventListener('submit', e => {
+        e.preventDefault();
+        const editPostId = $('#submit-footer-btn').data('id');
+        //const editPostId = $(this).data('post-id')
+        const editContent = $('.input-id').val()
+        console.log('This id of post ' + editPostId);
+        $.ajax({
+            type: 'POST',
+            url: 'update_post',
+            data: {
+                'csrfmiddlewaretoken': csrftoken,
+                'content': editContent,
+                'pk': editPostId,
+            },
+            success: function(response) {
+                console.log('This is updated post ' + response.id);
+                console.log('This is from edit button id ' + editPostId)
+            },
+            error: function(error) {
+                console.log(error)
+            }
+        });
+        e.stopImmediatePropagation();
+        return false;
+    });
+}
 
 let visible = 3
 
@@ -221,6 +266,7 @@ const getData = () => {
             // The variable data below is assigned to the response of above and data from django view getAjax
             const data = response.data;
             console.log('This is 3 per click posts ' + data);
+            const dataName = response.data.name
 
             data.forEach(el => {
                 postsBox.innerHTML += `
@@ -246,11 +292,10 @@ const getData = () => {
                 `
 
 
-                
             });
                 
             
-            editPost();
+            getPost();
             likeUnlikePosts();
             
             // Line below gets posts_ser from django view
@@ -340,7 +385,7 @@ postForm.addEventListener('submit', e => {
         `)
         */
             likeUnlikePosts();
-            editPost();
+            getPost();
             handleAlerts('success', 'New post added...')
             postForm.reset()
         },

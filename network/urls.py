@@ -10,7 +10,8 @@ urlpatterns = [
     path('like-unlike/', views.like_unlike_post, name='like-unlike'),
     path('follow_posts', views.following_posts, name='follow_posts'),
     path('update_follow/<int:id>', views.update_follow, name='update_follow'),
-    path('update-post/<int:id>', views.edit_post, name="update-post"),
+    path('get_post/<int:id>', views.get_post, name="get-post"),
+    path('update_post', views.update_post, name="update-post"),
     # <int:num_posts will give us how many posts we want loaded
     path('getAjax/<int:num_posts>', views.getAjax, name='getAjax'),
     path("login", views.login_view, name="login"),

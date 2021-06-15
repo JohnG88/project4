@@ -29,19 +29,6 @@ def index(request):
                 'creator_id': item_form.creator.user.id,
             })
     
-    """post = Post.objects.all()
-    data = []
-    for p in post:
-        item = {
-        'id': p.id,
-        'content': p.content,
-        'created_date': p.created_date,
-        'creator': p.creator.user.username
-        }
-        data.append(item)
-        return JsonResponse({'data': data})
-    print(data)
-    """
     context = {'form': form}
     return render(request, "network/index.html", context)
 
@@ -124,23 +111,49 @@ def profile_page(request):
     }
     return JsonResponse({'data': profile_info, 'posts_obj': posts_data})
 
-def edit_post(request, id):
+def get_post(request, id):
     post = Post.objects.get(id=id)
-    '''
-    if request.method == 'POST':
-        e_form = PostForm(request.POST, instance=post)
-        if e_form.is_valid():
-            e_form.save()
-    '''
-        
+    
     return JsonResponse({
-            'id': post.id,
-            'content': post.content,
-            'created_date': post.created_date,
-            'creator': post.creator.user.username,
-            'creator_id': post.creator.user.id,
+        'id': post.id,
+        'content': post.content,
+        'created_date': post.created_date,
+        'creator': post.creator.user.username,
+        'creator_id': post.creator.user.id,
     })
 
+def update_post(request):
+    if request.is_ajax():
+        id = request.POST.get('pk')
+        post = Post.objects.get(id=id)
+        if request.method == 'POST':
+            edit_content = request.POST.get('content')
+            post.content = edit_content
+            post.save()
+
+            return JsonResponse({
+                'id': post.id,
+                'content': post.content,
+                'creator': post.creator.user.username,
+                'creator_id': post.creator.user.id
+            })
+            
+    
+    """
+    edit_content = request.POST.get('edit-content-input')
+
+    edit_post = Post.objects.get(id=id)
+    edit_post.content = edit_content
+    edit_post.save()
+
+    updated_post = {
+        'id': edit_post.id,
+        'content': edit_post.content,
+        'creator': {'name': edit_post.creator.user.username, 'id': edit_post.creator.user.id}
+    }
+    
+    return JsonResponse({'updated_post': updated_post})
+    """
 
 def get_other_profile(request, id):
     user = User.objects.get(id=id)
@@ -267,7 +280,7 @@ def update_follow(request, id):
             profile.followers.add(user)
         #profile.save()
     """
-    # request.user.get_followed_profiles.all().count(), this lin was to get counts but i believe it as counting nothing
+    # request.user.get_followed_profiles.all().count(), this line was to get counts but i believe it as counting nothing
 
     return JsonResponse({'followers': followers, 'count': profile.get_following_count})
 
