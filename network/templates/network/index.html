@@ -13,8 +13,6 @@
         Had to take out the -bs from middle of each data attribute for the modal to work, the bootstrap used in this project is an older version.(Example data-bs-toggle="modal")
         {% endcomment %}
     <!-- Modal-->
-    <form method="post" id="edit-post-form">
-        {% csrf_token %}
         <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">        
             <div class="modal-dialog" id="m-content">
                 <div class="modal-content">
@@ -23,15 +21,19 @@
                         <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div id="m-body" class="modal-body">
+                    {% comment "" %}
                         <input type="text" class="input-id" name="edit-content-input">
+                    {% endcomment %}
                     </div>
+                    {% comment "" %}
                     <div class="modal-footer" id="submit-footer">
                         
                     </div>
+                    {% endcomment %}
                 </div>
             </div>
         </div>
-    </form>
+    
     
     <div id="modal-div"></div> 
 

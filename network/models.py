@@ -92,7 +92,7 @@ class Profile(models.Model):
         return f"{self.user.username} (id {self.user.id}) - followed by {followers_str}"
 
 class Post(models.Model):
-    content = models.CharField(max_length=280)
+    content = models.CharField(max_length=280, null=True)
     created_date = models.DateTimeField(default=timezone.now)
     creator  = models.ForeignKey(Profile, on_delete=models.CASCADE, blank=True, related_name="get_all_posts")
     likes = models.ManyToManyField(Profile, blank=True, related_name="get_all_liked_posts")

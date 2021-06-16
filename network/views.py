@@ -122,6 +122,7 @@ def get_post(request, id):
         'creator_id': post.creator.user.id,
     })
 
+
 def update_post(request):
     if request.is_ajax():
         id = request.POST.get('pk')

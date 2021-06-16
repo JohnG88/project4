@@ -27,6 +27,7 @@ const otherProfileStats = document.getElementById('other-profile-stats');
 const followPosts = document.getElementById('f-posts');
 
 const modalBody = document.getElementById('m-body');
+const mainModal = document.getElementById('exampleModal');
 const modalBodyLabel = document.getElementById('exampleModalLabel');
 const modalSubmitFooter = document.getElementById('submit-footer')
 
@@ -190,6 +191,7 @@ const getPost = () => {
     //editPostForm.addEventListener('submit', e => {
         e.preventDefault();
         e.stopPropagation();
+        
         var postId = $(this).data('post-id')
         console.log('This is post id ' + postId);
 
@@ -208,11 +210,44 @@ const getPost = () => {
                     <input type="text" class="input-id" name="edit-content-input">
                 `
                 */
-                $('.input-id').val(`${postData.content}`)
 
+                modalBody.innerHTML += `
+                <form method="post" id="edit-post-form" data-edit-form-id="${postData.id}">
+                    <input type="text" class="input-id" name="edit-content-input">
+                
+                    <div class="modal-footer" id="submit-footer">
+                        <input id="submit-footer-btn" type="submit" class="btn btn-primary save-edit-button" data-id="${postData.id}" value="Save Edit">
+                    </div>
+                </form>
+                `
+
+                $('.input-id').val(`${postData.content}`)
+                /*
+                modalBody.innerHTML += `<form method="post" id="edit-post-form" data-edit-form="${postData.id}">
+                    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">        
+                        <div class="modal-dialog" id="m-content">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel"></h5>
+                                    <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div id="m-body" class="modal-body">
+                                    <input type="text" class="input-id" name="edit-content-input">
+                                </div>
+                                <div class="modal-footer" id="submit-footer">
+                                <input id="submit-footer-btn" type="submit" class="btn btn-primary save-edit-button" data-id="${postData.id}" value="Save Edit">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                `
+                */
+                /*
                 modalSubmitFooter.innerHTML += `
                 <input id="submit-footer-btn" type="submit" class="btn btn-primary save-edit-button" data-id="${postData.id}" value="Save Edit">
                 `
+                */
                 editOnlyPost();
             },
             error: function(error) {
@@ -226,14 +261,17 @@ const getPost = () => {
     });
 };
 
+
 const editOnlyPost = () => {
-    //$(document).on('submit', '.save-edit-button', function(e) {
-    editPostForm.addEventListener('submit', e => {
+    $(document).on('submit', '#edit-post-form', function(e) {
+    //editPostForm.addEventListener('submit', e => {
         e.preventDefault();
-        const editPostId = $('#submit-footer-btn').data('id');
+        //modalBody.innerHTML = '';
+        const editPostId = $(this).data('edit-form-id');
         //const editPostId = $(this).data('post-id')
         const editContent = $('.input-id').val()
         console.log('This id of post ' + editPostId);
+        console.log('This is new content ' + editContent)
         $.ajax({
             type: 'POST',
             url: 'update_post',
@@ -245,6 +283,8 @@ const editOnlyPost = () => {
             success: function(response) {
                 console.log('This is updated post ' + response.id);
                 console.log('This is from edit button id ' + editPostId)
+
+                modalBody.innerHTML = '';
             },
             error: function(error) {
                 console.log(error)
@@ -254,6 +294,7 @@ const editOnlyPost = () => {
         return false;
     });
 }
+
 
 let visible = 3
 
