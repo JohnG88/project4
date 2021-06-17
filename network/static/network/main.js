@@ -32,7 +32,15 @@ const modalBodyLabel = document.getElementById('exampleModalLabel');
 const modalSubmitFooter = document.getElementById('submit-footer')
 
 
+window.onclick = function(event) {
+    if (event.target == mainModal) {
+        modalBody.innerHTML = '';
+    }
+}
 
+$('#close-x').click(function() {
+    modalBody.innerHTML = '';
+})
 
 
 /*
@@ -283,8 +291,12 @@ const editOnlyPost = () => {
             success: function(response) {
                 console.log('This is updated post ' + response.id);
                 console.log('This is from edit button id ' + editPostId)
-
+                // to stop duplicating divs in modal
                 modalBody.innerHTML = '';
+                // To hide div on submit
+                $('#exampleModal').modal('hide');
+
+                
             },
             error: function(error) {
                 console.log(error)
