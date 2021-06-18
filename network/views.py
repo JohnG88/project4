@@ -123,9 +123,9 @@ def get_post(request, id):
     })
 
 
-def update_post(request):
+def update_post(request, id):
     if request.is_ajax():
-        id = request.POST.get('pk')
+        #id = request.POST.get('pk')
         post = Post.objects.get(id=id)
         if request.method == 'POST':
             edit_content = request.POST.get('content')

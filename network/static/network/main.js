@@ -278,15 +278,16 @@ const editOnlyPost = () => {
         const editPostId = $(this).data('edit-form-id');
         //const editPostId = $(this).data('post-id')
         const editContent = $('.input-id').val()
+        //const oldContent = getElementById('old-content')
         console.log('This id of post ' + editPostId);
         console.log('This is new content ' + editContent)
         $.ajax({
             type: 'POST',
-            url: 'update_post',
+            url: `update_post/${editPostId}`,
             data: {
                 'csrfmiddlewaretoken': csrftoken,
                 'content': editContent,
-                'pk': editPostId,
+                //'pk': editPostId,
             },
             success: function(response) {
                 console.log('This is updated post ' + response.id);
@@ -295,7 +296,15 @@ const editOnlyPost = () => {
                 modalBody.innerHTML = '';
                 // To hide div on submit
                 $('#exampleModal').modal('hide');
+                
+                // Add a dynamic id to element to change that element, in this case, `content-update-${response.id}` is from p element that holds ${el.content} from getData function in postsBox.innerHTML
+                document.getElementById(`content-update-${response.id}`).innerHTML = response.content;
+                
+                
+                
+                //getPostContentId.getAttribute('data-id-content').innerHTML = response.content;
 
+                //document.getElementById('old-content').innerHTML = response.content;
                 
             },
             error: function(error) {
@@ -326,7 +335,7 @@ const getData = () => {
                 <div class="card mb-2" style="width: 18rem;">
                     <div class="card-body">
                     <a id="profile-link" class="other-profile-id" data-id="${el.creator.id}" href="#"><h5 class="card-title">${el.creator.name}</h5></a>
-                        <p class="card-text">${el.content}</p>
+                        <p id="content-update-${el.id}" class="card-text c-t">${el.content}</p>
                         <p class="card-text">${el.created_date}</p>
                     </div>
                     <div class="card-footer">
@@ -396,7 +405,7 @@ postForm.addEventListener('submit', e => {
                 <div class="card mb-2" style="width: 18rem;">
                     <div class="card-body">
                         <a class="other-profile-id" data-id="${data.creator_id}" href="#"><h5 class="card-title">${data.creator}</h5></a>
-                        <p class="card-text">${data.content}</p>
+                        <p id="old-content" class="card-text">${data.content}</p>
                         <p class="card-text">${data.created_date}</p>
                     </div>
                     <div class="card-footer">
