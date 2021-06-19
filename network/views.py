@@ -156,6 +156,12 @@ def update_post(request, id):
     return JsonResponse({'updated_post': updated_post})
     """
 
+def delete_post(request, id):
+    post = Post.objects.get(id=id)
+    if request.method == 'POST':
+        post.delete()
+        return JsonResponse({'resuslt': 'Post Deleted Successfully'})
+
 def get_other_profile(request, id):
     user = User.objects.get(id=id)
     profile = Profile.objects.get(user=user)

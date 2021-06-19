@@ -294,7 +294,7 @@ const editOnlyPost = () => {
                 console.log('This is from edit button id ' + editPostId)
                 // to stop duplicating divs in modal
                 modalBody.innerHTML = '';
-                // To hide div on submit
+                // To hide modal on submit
                 $('#exampleModal').modal('hide');
                 
                 // Add a dynamic id to element to change that element, in this case, `content-update-${response.id}` is from p element that holds ${el.content} from getData function in postsBox.innerHTML
@@ -316,6 +316,80 @@ const editOnlyPost = () => {
     });
 }
 
+const getDeletePost = () => {
+    $(document).on('click', '.deleteP', function(e) {
+        e.preventDefault();
+        var postId = $(this).data('post-id')
+        console.log('This is post id ' + postId);
+
+        $.ajax({
+            type: 'GET',
+            url: `get_post/${postId}`,
+            success: function(postData) {
+                console.log('This is post data ' + postData.id);
+                modalBodyLabel.innerHTML = `
+                    ${postData.creator}
+                `
+                /*
+                modalBody.innerHTML = `
+                    <input type="text" class="input-id" name="edit-content-input">
+                `
+                */
+
+                modalBody.innerHTML += `
+                <form method="post" id="delete-post-form" data-delete-form-id="${postData.id}">
+                    <p>Are you sure you wish to delete this post ${postData.id}</p>
+                
+                    <div class="modal-footer" id="submit-footer">
+                        <input id="submit-footer-btn" type="submit" class="btn btn-primary save-edit-button" data-id="${postData.id}" value="Delete Post">
+                    </div>
+                </form>
+                `
+                deletePost();
+            },
+            error: function(error) {
+                console.log(error);
+            }
+        });
+        e.stopImmediatePropagation();
+        return false;
+    });
+};
+
+/*
+<form method="post" id="delete-post-form" data-delete-form-id="${ele.id}">
+                                        <button href="#" class="btn btn-primary">Delete</button>
+                                    </form>
+*/
+
+const deletePost = () => {
+    $(document).on('submit', '#delete-post-form', function(e) {
+        e.preventDefault();
+        const deletePostId = $(this).data('delete-form-id');
+
+        console.log('This is delete post id ' + deletePostId);
+
+        $.ajax({
+            type: 'POST',
+            url: `delete_post/${deletePostId}`,
+            data: {
+                'csrfmiddlewaretoken': csrftoken,
+            },
+            success: function(response) {
+                $(`#delete-card-id-${deletePostId}`).fadeOut(2000);
+                //document.getElementById(`delete-card-id-${deletePostId}`).remove();
+                //remove();
+                modalBody.innerHTML = '';
+                $('#exampleModal').modal('hide');
+            },
+            error: function(error) {
+                console.log(error);
+            }
+        });
+        e.stopImmediatePropagation();
+        return false;
+    });
+};
 
 let visible = 3
 
@@ -332,7 +406,7 @@ const getData = () => {
 
             data.forEach(el => {
                 postsBox.innerHTML += `
-                <div class="card mb-2" style="width: 18rem;">
+                <div id="delete-card-id-${el.id}" class="card mb-2" style="width: 18rem;">
                     <div class="card-body">
                     <a id="profile-link" class="other-profile-id" data-id="${el.creator.id}" href="#"><h5 class="card-title">${el.creator.name}</h5></a>
                         <p id="content-update-${el.id}" class="card-text c-t">${el.content}</p>
@@ -402,7 +476,7 @@ postForm.addEventListener('submit', e => {
         success: function(data) {
             console.log(data)
             postsBox.insertAdjacentHTML('afterbegin', `
-                <div class="card mb-2" style="width: 18rem;">
+                <div id="delete-card-id-${data.id}" class="card mb-2" style="width: 18rem;">
                     <div class="card-body">
                         <a class="other-profile-id" data-id="${data.creator_id}" href="#"><h5 class="card-title">${data.creator}</h5></a>
                         <p id="old-content" class="card-text">${data.content}</p>
@@ -512,7 +586,7 @@ $('#profile-name').click(function(e) {
                 
                 posts.forEach(ele => {
                     profileObjs.innerHTML += `
-                        <div class="card mb-2" style="width: 18rem;">
+                        <div id="delete-card-id-${ele.id}" class="card mb-2" style="width: 18rem;">
                         <div class="card-body">
                             <h5 class="card-title">${ele.creator.name}</h5>
                             <p class="card-text">${ele.content}</p>
@@ -521,7 +595,7 @@ $('#profile-name').click(function(e) {
                         <div class="card-footer">
                             <div class="row">
                                 <div class="col">
-                                    <a href="#" class="btn btn-primary">Delete</a>
+                                    <a href="#" id="delete-post-link" class="btn btn-primary deleteP" data-toggle="modal" data-target="#exampleModal" data-post-id="${ele.id}">Delete</a>
                                 </div>
                                 <div class="col">
                                     <form class="like-unlike-forms" data-form-id="${ele.id}">
@@ -534,6 +608,7 @@ $('#profile-name').click(function(e) {
                     `
                     
                 });
+                getDeletePost();
             /*
             }
             
@@ -613,7 +688,7 @@ $(document).off('click').on('click', '.other-profile-id', function(e) {
             
                 otherProfileData.forEach(el => {
                     otherProfilePosts.innerHTML += `
-                    <div class="card mb-2" style="width: 18rem;">
+                    <div id="delete-card-id-${el.id}" class="card mb-2" style="width: 18rem;">
                         <div class="card-body">
                         <h5 class="card-title">${el.creator.name}</h5>
                             <p class="card-text">${el.content}</p>
@@ -678,7 +753,7 @@ $('#follow_posts').click(function() {
 
             fPosts.forEach(el => {
                 followPosts.innerHTML += `
-                <div class="card mb-2" style="width: 18rem;">
+                <div id="delete-card-id-${el.id}" class="card mb-2" style="width: 18rem;">
                     <div class="card-body">
                     <h5 class="card-title">${el.creator.name}</h5>
                         <p class="card-text">${el.content}</p>
