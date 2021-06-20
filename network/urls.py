@@ -5,7 +5,7 @@ from . import views
 
 urlpatterns = [
     path("", views.index, name="index"),
-    path('profile_page', views.profile_page, name="profile_page"),
+    #path('profile_page', views.profile_page, name="profile_page"),
     path('other-profile/<int:id>', views.get_other_profile, name='other-profile'),
     path('like-unlike/', views.like_unlike_post, name='like-unlike'),
     path('follow_posts', views.following_posts, name='follow_posts'),

@@ -82,14 +82,14 @@ def like_unlike_post(request):
             likes = True
             obj.likes.add(profile)
         return JsonResponse({'likes': likes, 'count': obj.like_count})
-
+"""
 def profile_page(request):
     user = request.user
     #auctions = AuctionListing.objects.filter(user=user.id)
     profile = Profile.objects.get(user=user)
     print(profile)
     posts = Post.objects.filter(creator=profile)
-    posts_obj = serializers.serialize('json', posts)
+    #posts_obj = serializers.serialize('json', posts)
     #profile = Profile.objects.get(user=user.id)
     posts_data = []
     for pd in posts:
@@ -106,10 +106,12 @@ def profile_page(request):
     profile_info = {
         'id': user.id,
         'user': profile.user.username,
-        'followers': profile.get_following_count,
+        'followers': True if profile in request.user.get_followed_profiles.all() else False,
+        'count': profile.get_following_count,
         'following': request.user.get_followed_profiles.all().count(),
     }
-    return JsonResponse({'data': profile_info, 'posts_obj': posts_data})
+    return JsonResponse({'profile_info': profile_info, 'posts_data': posts_data})
+"""
 
 def get_post(request, id):
     post = Post.objects.get(id=id)
