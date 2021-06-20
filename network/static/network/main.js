@@ -130,9 +130,11 @@ const likeUnlikePosts = () => {
             error: function(error) {
                 console.log(error)
             }
-        })
-    }))
-}
+        });
+        e.stopImmediatePropagation();
+        return false;
+    }));
+};
 
 // To fix the multiple form submissions, .off('submit').on('submit', ...), works
 // On stackoverflow, it says: To only remove registered 'click' event handlers
@@ -319,7 +321,7 @@ const editOnlyPost = () => {
 const getDeletePost = () => {
     $(document).on('click', '.deleteP', function(e) {
         e.preventDefault();
-        var postId = $(this).data('post-id')
+        const postId = $(this).data('post-id')
         console.log('This is post id ' + postId);
 
         $.ajax({
@@ -341,10 +343,11 @@ const getDeletePost = () => {
                     <p>Are you sure you wish to delete this post ${postData.id}</p>
                 
                     <div class="modal-footer" id="submit-footer">
-                        <input id="submit-footer-btn" type="submit" class="btn btn-primary save-edit-button" data-id="${postData.id}" value="Delete Post">
+                        <input id="submit-footer-btn" type="submit" class="btn btn-primary delete-post-button" data-id="${postData.id}" value="Delete Post">
                     </div>
                 </form>
                 `
+
                 deletePost();
             },
             error: function(error) {
@@ -366,6 +369,13 @@ const deletePost = () => {
     $(document).on('submit', '#delete-post-form', function(e) {
         e.preventDefault();
         const deletePostId = $(this).data('delete-form-id');
+        /*
+        $(document).on('click', '.delete-post-button', function() {
+            const postIdFade = document.getElementById(`delete-card-id-${deletePostId}`)
+                postIdFade.fadeOut(2000);
+        })
+        */
+        $(`#delete-card-id-${deletePostId}`).fadeOut(2000);
 
         console.log('This is delete post id ' + deletePostId);
 
@@ -376,11 +386,19 @@ const deletePost = () => {
                 'csrfmiddlewaretoken': csrftoken,
             },
             success: function(response) {
-                $(`#delete-card-id-${deletePostId}`).fadeOut(2000);
+                //const postIdFade = $(document).getElementById(`delete-card-id-${deletePostId}`)
+                //postIdFade.fadeOut(2000);
+                //$(`#delete-card-id-${deletePostId}`).fadeOut(2000);
                 //document.getElementById(`delete-card-id-${deletePostId}`).remove();
                 //remove();
                 modalBody.innerHTML = '';
                 $('#exampleModal').modal('hide');
+                
+                /*
+                $(document).on('click', '#submit-footer-btn', function() {
+                    $(`#delete-card-id-${deletePostId}`).fadeOut(2000);
+                })
+                */
             },
             error: function(error) {
                 console.log(error);
@@ -479,7 +497,7 @@ postForm.addEventListener('submit', e => {
                 <div id="delete-card-id-${data.id}" class="card mb-2" style="width: 18rem;">
                     <div class="card-body">
                         <a class="other-profile-id" data-id="${data.creator_id}" href="#"><h5 class="card-title">${data.creator}</h5></a>
-                        <p id="old-content" class="card-text">${data.content}</p>
+                        <p id="content-update-${data.id}" class="card-text">${data.content}</p>
                         <p class="card-text">${data.created_date}</p>
                     </div>
                     <div class="card-footer">
@@ -524,6 +542,7 @@ postForm.addEventListener('submit', e => {
             getPost();
             handleAlerts('success', 'New post added...')
             postForm.reset()
+            $('#alert-box').fadeOut(6000);
         },
         error: function(error) {
             console.log(error)
@@ -546,23 +565,13 @@ const handleAlerts = (type, msg) => {
     `
 }
     
-// .removeClass
-
-
-//let toFollowLoaded = false;
-
-//$('#profile-name').click(function() {
 $('#profile-name').click(function(e) {
-    //e.stopPropagation();
     e.preventDefault();
-    //e.stopPropagation();
+    e.stopPropagation();
     $('#all-profile-objs').show();
     if ($('#main-body, #get-other-profile, #f-posts').is(':visible')) {
         $('#main-body, #get-other-profile, #f-posts').hide();
-    }
-    
-    
-
+    }    
     $.ajax({
         type: 'GET',
         url: 'profile_page',
@@ -572,54 +581,44 @@ $('#profile-name').click(function(e) {
             const posts = response.posts_obj;
             console.log(pfData);
             console.log(posts)
-
-            /*
-            if (!toFollowLoaded) {
-            */
-
-                
-                profileBox.innerHTML += ` 
-                <p>Profile: ${pfData.user}</p>
-                <p>Followers: ${pfData.followers}</p>
-                <p>Following: ${pfData.following}</p>
-                `
-                
-                posts.forEach(ele => {
-                    profileObjs.innerHTML += `
-                        <div id="delete-card-id-${ele.id}" class="card mb-2" style="width: 18rem;">
-                        <div class="card-body">
-                            <h5 class="card-title">${ele.creator.name}</h5>
-                            <p class="card-text">${ele.content}</p>
-                            <p class="card-text">${ele.created_date}</p>
-                        </div>
-                        <div class="card-footer">
-                            <div class="row">
-                                <div class="col">
-                                    <a href="#" id="delete-post-link" class="btn btn-primary deleteP" data-toggle="modal" data-target="#exampleModal" data-post-id="${ele.id}">Delete</a>
-                                </div>
-                                <div class="col">
-                                    <form class="like-unlike-forms" data-form-id="${ele.id}">
-                                        <button href="#" class="btn btn-primary" id="like-unlike-${ele.id}">${ele.likes ? `Unlike (${ele.count})` : `Like (${ele.count})`}</button>
-                                    </form>
-                                </div>
+            profileBox.innerHTML += ` 
+            <p>Profile: ${pfData.user}</p>
+            <p>Followers: ${pfData.followers}</p>
+            <p>Following: ${pfData.following}</p>
+            `
+            
+            posts.forEach(el => { 
+                profileObjs.innerHTML += `
+                <div id="delete-card-id-${el.id}" class="card mb-2" style="width: 18rem;">
+                    <div class="card-body">
+                        <a id="profile-link" class="other-profile-id" data-id="${el.creator.id}" href="#"><h5 class="card-title">${el.creator.name}</h5></a>
+                        <p id="content-update-${el.id}" class="card-text c-t">${el.content}</p>
+                        <p class="card-text">${el.created_date}</p>
+                    </div>
+                    <div class="card-footer">
+                        <div class="row">
+                            <div class="col">
+                                <a href="#" id="delete-post-link" class="btn btn-primary deleteP" data-toggle="modal" data-target="#exampleModal" data-post-id="${el.id}">Delete</a>
+                            </div>
+                            <div class="col">
+                                <form class="like-unlike-forms" data-form-id="${el.id}">
+                                    <button href="#" class="btn btn-primary" id="like-unlike-${el.id}">${el.likes ? `Unlike (${el.count})` : `Like (${el.count})`}</button>
+                                </form>
                             </div>
                         </div>
                     </div>
-                    `
-                    
-                });
-                getDeletePost();
-            /*
-            }
-            
-            toFollowLoaded = true;
-            */
+                </div>
+            `
+            });
+            likeUnlikePosts();
+            getDeletePost();            
         },
         error: function(error) {
             console.log(error);
         }
     });
 });
+
 
 //let otherProfileBe = false;
 // This is for a element .other-profile-id
@@ -716,6 +715,7 @@ $(document).off('click').on('click', '.other-profile-id', function(e) {
                 };
                 
                 followUnfollowProfile();
+                likeUnlikePosts();
             
                 /*
             } else {
@@ -753,7 +753,7 @@ $('#follow_posts').click(function() {
 
             fPosts.forEach(el => {
                 followPosts.innerHTML += `
-                <div id="delete-card-id-${el.id}" class="card mb-2" style="width: 18rem;">
+                <div class="card mb-2" style="width: 18rem;">
                     <div class="card-body">
                     <h5 class="card-title">${el.creator.name}</h5>
                         <p class="card-text">${el.content}</p>
@@ -774,6 +774,7 @@ $('#follow_posts').click(function() {
                 </div>
                 `
             });
+            likeUnlikePosts();
         },
         error: function(error) {
             console.log(error);
