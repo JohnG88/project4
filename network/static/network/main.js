@@ -64,9 +64,9 @@ $('#all-posts').click(function() {
     otherProfileStats.innerHTML = '';
     otherProfilePosts.innerHTML = '';
 
-    followPosts.innerHTML = '';
-    profileBox.innerHTML = '';
-    profileObjs.innerHTML = '';
+    //followPosts.innerHTML = '';
+    //profileBox.innerHTML = '';
+    //profileObjs.innerHTML = '';
 });
 /*
 - Needed to take off quotes from middle of ids of if statement it is fixed now.
@@ -171,7 +171,7 @@ const followUnfollowProfile = () => {
                 btnClicked.textContent = response.followers ? `Unfollow` : `Follow`;
                 changeCount.textContent = response.count;
 
-                
+                followPosts.innerHTML = '';
                 
 
                 /*
@@ -575,10 +575,12 @@ $(document).off('click').on('click', '.other-profile-id', function() {
     //return false;
     //$('#get-other-profile').empty();
     $('#get-other-profile').show();
-    if ($('#main-body, #all-profile-objs').is(':visible')) {
-        $('#main-body, #all-profile-objs').hide();
+    if ($('#main-body').is(':visible')) {
+        $('#main-body').hide();
     }
     
+    followPosts.innerHTML = '';
+
     //$('#get-other-profile').load(" #get-other-profile");
     
     //.data
@@ -742,6 +744,8 @@ $('#follow_posts').click(function() {
 
     otherProfileStats.innerHTML = '';
     otherProfilePosts.innerHTML = '';
+    //postsBox.innerHTML = '';
+    followPosts.innerHTML = '';
 
     $.ajax({
         type: 'GET',
@@ -756,7 +760,7 @@ $('#follow_posts').click(function() {
                 followPosts.innerHTML += `
                 <div id="delete-card-id-${el.id}" class="card mb-2" style="width: 18rem;">
                     <div class="card-body">
-                    <h5 class="card-title">${el.creator.name}</h5>
+                        <a class="other-profile-id" data-id="${el.creator.id}" href="#"><h5 class="card-title">${el.creator.name}</h5></a>
                         <p class="card-text">${el.content}</p>
                         <p class="card-text">${el.created_date}</p>
                     </div>

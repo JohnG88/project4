@@ -4,6 +4,8 @@ from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 from django.urls import reverse
 
+from django.core.paginator import Paginator, EmptyPage
+
 from .forms import PostForm
 
 from .models import *
@@ -169,7 +171,7 @@ def get_other_profile(request, id):
     profile = Profile.objects.get(user=user)
     print(profile)
     posts = Post.objects.filter(creator=profile)
-    
+
     single_profile_objs = []
     for spd in posts:
         spd_item = {
@@ -325,3 +327,109 @@ def register(request):
         return HttpResponseRedirect(reverse("index"))
     else:
         return render(request, "network/register.html")
+
+
+'''
+        - To use paginator stuff, create variable, my case is posts = Post.objects.filter(creator=profile)
+        - Then create variable with paginator and posts and a number: p = Paginator(posts, 10)
+        - Then to get results in a particular page, create a variable: page = p.page(2), .page() is a method and number is which page
+        - Pass page variable to context: context = {'page': page}, add page in for loop in html file,there should be 10 objects and depending on page number it will show the amount of objects in that page(in this case, if there are 100 objects and paginator has 10 objects but on second page, it will show 10-19, page 3 = 20-39(remember comps work from 0 first so 0=first)), idk if it works with JsonResponse
+
+        - Instead of hard coding number to page use, page_num = request.GET.get('page')
+        - Then update page variable: page = p.page(page_num, 1), ,1 in parenthesis will give you default first page
+
+        - To not get error page when a bad number is placed in num_page, add EmptyPage right by Paginator on top,use try:
+            try:
+                page = p.page(page_num)
+            except EmptyPage:
+                page = p.page(1)
+
+        - To see how many pages it will produce:
+            print('Number of Pages')
+            print(p.num_pages) If this works it should show 10 because 10 objects per page from 100 objects should be 10 pages
+
+        - In html add to links for previous and next page:
+            <a href="#">Previous Page</a>
+            <a href="#">Next Page</a>
+
+        - To make these links go away in html, just check to see if they have previous/next:
+            {% if page.has_previous %}
+            <a href="#">Previous Page</a>
+            {% endif %}
+            {% if page.has_next %}
+            <a href="#">Next Page</a>
+            {% endif %}
+
+        - Then to make them useful ad the href links from url query:
+            {% if page.has_previous %}
+            <a href="{% url 'index' %}?page={{items.previous_page_number}}">Previous Page</a>
+            {% endif %}
+            {% if page.has_next %}
+            <a href="{% url 'index' %}?page={{items.next_page_number}}">Next Page</a>
+            {% endif %}
+
+        - To work with ajax:
+            In jquery:
+                $(document).ready(function() {
+                    $('#id-from-btn').on('click', function() {
+                        var _currentResult=$('.post-box').length;
+
+                        $.ajax({
+                            url: 'url_from_urls.py',
+                            type: 'POST',
+                            data: {
+                                'offset': _currentResult,
+                                // 'csrfmiddlewaretoken' is the name of token and csrftoken would be the javascript function
+                                'csrfmiddlewaretoken': csrftoken,
+                            },
+                            dataType: 'json',
+                            beforeSend: function() {
+                                $('#id-from-btn').addClass('disabled').text('Loading...'):
+                            },
+                            success: function(res) {
+                                console.log(res);
+                                var _html = '';
+                                var json_data = $.parseJSON(res.posts);
+                                $.each(json_data, function(index, data) {
+                                    _html += '<div></div>/
+                                    <h5>'+ data.fields.title +'</h5>/  
+                                    <p>'+ data.fields.detail +'</p>/
+                                '
+                                // Always add quotes at end of html not being use as inserted data and when using html again(ex. <h5>'+ data.fields.title +'</h5>/ )
+                                // Idk what / does
+                                });
+                                $(".post-wrapper").append(_html);
+                                // To hide load button
+                                var _countTotal=$(".post-box").length
+                                if (_countTotal == res.totalResult) {
+                                    $('#id-from-btn').remove();
+                                } else {
+                                    $('#id-from-btn').removeClass('disabled').text('Load More');
+                                }
+                                
+                            }
+                        });
+                    });
+                });
+
+            // This is almost like it is with getAjax function
+            - in views.py:
+                def load_more(request):
+                    offset = int(request.POST['offset'])
+                    limit = 2
+                    posts = Post.objects.all()[offset:limit + offset]
+                    totalData = Post.objects.count()
+                    data = {}
+                    posts_json = serializers.serialize('json', posts)
+                    return JsonResponse(data = {
+                        'posts': posts_json,
+                        'totalResult': totalData
+                    })
+
+            - In urls.py:
+                path('load-more', views.load_more, name='load-more'),
+
+            - to get the same way as getAjax just get the data the same way and JsonResponse it
+                    
+            
+'''
