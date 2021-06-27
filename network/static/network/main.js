@@ -552,8 +552,8 @@ $(document).off('click').on('click', '.other-profile-id', function() {
     //return false;
     //$('#get-other-profile').empty();
     $('#get-other-profile').show();
-    if ($('#main-body').is(':visible')) {
-        $('#main-body').hide();
+    if ($('#main-body, #f-posts').is(':visible')) {
+        $('#main-body, #f-posts').hide();
     }
     
     $('#follow-load-btn').hide();
@@ -752,7 +752,7 @@ const followingProfiles = () => {
             });
             likeUnlikePosts();
             getDeletePost();
-            $('#follow-load-btn').show();
+            //$('#follow-load-btn').show();
             if (response.size === 0) {
                 followEndBox.textContent = 'No posts added yet ...'
             } 
@@ -768,19 +768,24 @@ const followingProfiles = () => {
     
 }
 
+let toFollowLoaded = false;
+
 $('#follow_posts').on('click', function() {
     
     $('#f-posts').show();
     if ($('#main-body, #get-other-profile, #all-profile-objs').is(':visible')) {
         $('#main-body, #get-other-profile, #all-profile-objs').hide();
     }
+    $('#follow-load-btn').show();
 
     otherProfileStats.innerHTML = '';
     otherProfilePosts.innerHTML = '';
     //postsBox.innerHTML = '';
     //followPosts.innerHTML = '';
-
-    followingProfiles();
+    if (!toFollowLoaded) {
+        followingProfiles();
+    }
+    toFollowLoaded = true;
 });
 
 followLoadBtn.addEventListener('click', () => {
