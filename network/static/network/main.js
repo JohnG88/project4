@@ -24,7 +24,9 @@ const otherProfile = document.getElementById('get-other-profile');
 const otherProfilePosts = document.getElementById('other-profile-posts');
 const otherProfileStats = document.getElementById('other-profile-stats');
 
-const followPosts = document.getElementById('f-posts');
+const followPosts = document.getElementById('f-posts-body');
+const followEndBox = document.getElementById('follow-end-box');
+const followLoadBtn = document.getElementById('follow-load-btn');
 
 const modalBody = document.getElementById('m-body');
 const mainModal = document.getElementById('exampleModal');
@@ -232,32 +234,7 @@ const getPost = () => {
                 `
 
                 $('.input-id').val(`${postData.content}`)
-                /*
-                modalBody.innerHTML += `<form method="post" id="edit-post-form" data-edit-form="${postData.id}">
-                    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">        
-                        <div class="modal-dialog" id="m-content">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="exampleModalLabel"></h5>
-                                    <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
-                                </div>
-                                <div id="m-body" class="modal-body">
-                                    <input type="text" class="input-id" name="edit-content-input">
-                                </div>
-                                <div class="modal-footer" id="submit-footer">
-                                <input id="submit-footer-btn" type="submit" class="btn btn-primary save-edit-button" data-id="${postData.id}" value="Save Edit">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </form>
-                `
-                */
-                /*
-                modalSubmitFooter.innerHTML += `
-                <input id="submit-footer-btn" type="submit" class="btn btn-primary save-edit-button" data-id="${postData.id}" value="Save Edit">
-                `
-                */
+
                 editOnlyPost();
             },
             error: function(error) {
@@ -478,7 +455,7 @@ const getData = () => {
 
 loadBtn.addEventListener('click', () => {
     visible += 3
-    getData()
+    getData();
 });
 
 postForm.addEventListener('submit', e => {
@@ -579,7 +556,9 @@ $(document).off('click').on('click', '.other-profile-id', function() {
         $('#main-body').hide();
     }
     
-    followPosts.innerHTML = '';
+    $('#follow-load-btn').hide();
+
+    //followPosts.innerHTML = '';
 
     //$('#get-other-profile').load(" #get-other-profile");
     
@@ -736,20 +715,12 @@ $('#profile_name').click(function() {
 })
 */
 
-$('#follow_posts').click(function() {
-    $('#f-posts').show();
-    if ($('#main-body, #get-other-profile, #all-profile-objs').is(':visible')) {
-        $('#main-body, #get-other-profile, #all-profile-objs').hide();
-    }
 
-    otherProfileStats.innerHTML = '';
-    otherProfilePosts.innerHTML = '';
-    //postsBox.innerHTML = '';
-    followPosts.innerHTML = '';
 
+const followingProfiles = () => {
     $.ajax({
         type: 'GET',
-        url: 'follow_posts',
+        url: `follow_posts/${visible}`,
         success: function(response) {
             console.log(response);
             const fPosts = response.followed_profiles_objs;
@@ -781,14 +752,41 @@ $('#follow_posts').click(function() {
             });
             likeUnlikePosts();
             getDeletePost();
+            $('#follow-load-btn').show();
+            if (response.size === 0) {
+                followEndBox.textContent = 'No posts added yet ...'
+            } 
+            else if (response.size <= visible) {
+                followLoadBtn.classList.add('not-visible')
+                followEndBox.textContent = 'No more posts to load ...'
+            }
         },
         error: function(error) {
             console.log(error);
         }
     });
+    
+}
+
+$('#follow_posts').on('click', function() {
+    
+    $('#f-posts').show();
+    if ($('#main-body, #get-other-profile, #all-profile-objs').is(':visible')) {
+        $('#main-body, #get-other-profile, #all-profile-objs').hide();
+    }
+
+    otherProfileStats.innerHTML = '';
+    otherProfilePosts.innerHTML = '';
+    //postsBox.innerHTML = '';
+    //followPosts.innerHTML = '';
+
+    followingProfiles();
 });
 
-
+followLoadBtn.addEventListener('click', () => {
+    visible += 3
+    followingProfiles();
+});
 
 /*
 function updateDiv() {

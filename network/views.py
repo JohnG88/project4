@@ -183,7 +183,11 @@ def get_other_profile(request, id):
             'creator': {'name': spd.creator.user.username, 'id': spd.creator.user.id}
         }
         single_profile_objs.append(spd_item)
-
+    '''
+    paginate_single_profile_objs = Paginator(single_profile_objs, 3)
+    page_number = request.GET.get('page')
+    page_obj = paginate_single_profile_objs.get_page(page_number)
+    '''
     single_profile_info = {
         'id': user.id,
         'user': profile.user.username,
@@ -225,10 +229,17 @@ def get_other_profile(request, id):
     #context = {'profile': profile}
     #return render(request, 'network.other_profile.html', context)
 
-def following_posts(request):
+def following_posts(request, num_posts):
     profile = Profile.objects.get(user=request.user)
     followed_profiles = request.user.get_followed_profiles.all()
     print(followed_profiles)
+    
+    visible = 3
+    upper = num_posts
+    lower = upper - visible
+    size = Post.objects.filter(creator__in=followed_profiles).all().count()
+    
+    
     posts = Post.objects.filter(creator__in=followed_profiles).all()
     print(posts)
 
@@ -244,7 +255,7 @@ def following_posts(request):
         }
         followed_profiles_objs.append(post_items)
 
-    return JsonResponse({'followed_profiles_objs': followed_profiles_objs})
+    return JsonResponse({'followed_profiles_objs': followed_profiles_objs[lower:upper], 'size': size})
 
 def login_view(request):
     if request.method == "POST":
