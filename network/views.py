@@ -164,13 +164,20 @@ def delete_post(request, id):
     post = Post.objects.get(id=id)
     if request.method == 'POST':
         post.delete()
-        return JsonResponse({'resuslt': 'Post Deleted Successfully'})
+        return JsonResponse({'result': 'Post Deleted Successfully'})
 
-def get_other_profile(request, id):
+def get_other_profile(request):
+    id = request.GET.get('id')
     user = User.objects.get(id=id)
     profile = Profile.objects.get(user=user)
     print(profile)
-    posts = Post.objects.filter(creator=profile)
+    '''
+    visible = 3
+    upper = num_posts
+    lower = upper - visible
+    size = Post.objects.filter(creator=profile).all().count()
+    '''
+    posts = Post.objects.filter(creator=profile).all()
 
     single_profile_objs = []
     for spd in posts:
