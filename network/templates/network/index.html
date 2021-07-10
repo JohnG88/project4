@@ -3,6 +3,8 @@
 
 {% block body %} 
     {{ user.id|json_script:"user_id" }}
+
+
     
     <!-- Button trigger modal 
     <button type="button" class="btn btn-primary" id="modal-button" data-toggle="modal" data-target="#exampleModal">
@@ -34,13 +36,13 @@
             </div>
         </div>
     
-    
-
     <div id="get-other-profile">
         <div id="other-profile-stats">
         </div>
+    
         <div id="other-profile-posts">
         </div>
+        
         {% comment "" %}
         <div class="text-center mb-3" id="profile-end-box">
             <button class="btn btn-primary" id="profile-load-btn">Load More</button>
@@ -48,12 +50,13 @@
         {% endcomment %}
     </div>
 
+
     <div id="f-posts">
         <div id="f-posts-body">
             
         </div>
         <div class="text-center mb-3" id="follow-end-box">
-            <button class="btn btn-primary" id="follow-load-btn">Load More</button>
+            <button class="btn btn-primary" id="follow-load-button">Load More</button>
         </div>
     </div>
     
@@ -78,6 +81,21 @@
         </div>
     </div>
     {% comment "" %}
+    <div id="get-other-profile">
+        <div id="other-profile-stats">
+        </div>
+        <div id="other-profile-posts">
+        </div>
+        
+        <div id="other-profile-group">
+            <div id="other-profile-posts">
+            </div>
+            <div class="text-center mb-3" id="profile-end-box">
+                <button class="btn btn-primary" id="profile-load-btn">Load More</button>
+            </div>
+        </div>
+    </div>
+    
     <div id="all-profile-objs">
         <div id="profile-info">
         </div>

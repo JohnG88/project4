@@ -232,7 +232,7 @@ def get_other_profile(request):
     #print(profile_obj)
 
     return JsonResponse({'single_profile_objs': single_profile_objs, 'single_profile_info': single_profile_info})
-
+    #'single_profile_info': single_profile_info
     #context = {'profile': profile}
     #return render(request, 'network.other_profile.html', context)
 
@@ -244,7 +244,7 @@ def following_posts(request, num_posts):
     visible = 3
     upper = num_posts
     lower = upper - visible
-    size = Post.objects.filter(creator__in=followed_profiles).all().count()
+    sizer = Post.objects.filter(creator__in=followed_profiles).all().count()
     
     
     posts = Post.objects.filter(creator__in=followed_profiles).all()
@@ -262,7 +262,7 @@ def following_posts(request, num_posts):
         }
         followed_profiles_objs.append(post_items)
 
-    return JsonResponse({'followed_profiles_objs': followed_profiles_objs[lower:upper], 'size': size})
+    return JsonResponse({'followed_profiles_objs': followed_profiles_objs[lower:upper], 'sizer': sizer})
 
 def login_view(request):
     if request.method == "POST":

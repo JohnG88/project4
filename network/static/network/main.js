@@ -28,7 +28,7 @@ const profileLoadButton = document.getElementById('profile-load-btn');
 
 const followPosts = document.getElementById('f-posts-body');
 const followEndBox = document.getElementById('follow-end-box');
-const followLoadBtn = document.getElementById('follow-load-btn');
+const followLoadBtn = document.getElementById('follow-load-button');
 
 const modalBody = document.getElementById('m-body');
 const mainModal = document.getElementById('exampleModal');
@@ -46,7 +46,7 @@ $('#close-x').click(function() {
     modalBody.innerHTML = '';
 })
 
-$('#follow-load-btn').hide();
+//$('#follow-load-btn').hide();
 
 /*
 $('#profile-name').click(function() {
@@ -62,7 +62,7 @@ $('#all-posts').click(function() {
     if ($('#all-profile-objs, #get-other-profile, #f-posts').is(':visible')) {
         $('#all-profile-objs, #get-other-profile, #f-posts').hide();
     }
-
+    $('#profile-load-btn').hide();
     //$('#get-other-profile').load(" #get-other-profile");
 
     alertBox.innerHTML = '';
@@ -439,14 +439,15 @@ const getData = () => {
     
             //${el.content} - <b>${el.created_date}</b> - <p>${el.creator}</p><br>
             // Line below pops out a 7 in console, size id s from django view getAjax
-            console.log(response.size)
+            console.log('This for all posts ' + response.size)
             // If size is 0 then add this quote to endBox 
             if (response.size === 0) {
                 endBox.textContent = 'No posts added yet...'
             }
             // Else if size is greater than or = to visible posts then make load more button invisible and add quote instead
             else if (response.size <= visible) {
-                loadBtn.classList.add('not-visible')
+                //loadBtn.classList.add('not-visible')
+                $('#load-btn').hide();
                 endBox.textContent = 'No more posts to load...'
             }
         },
@@ -496,7 +497,7 @@ postForm.addEventListener('submit', e => {
             `)
             
             /*
-            profileObjs.insertAdjacentHTML('afterbegin', `
+            otherProfilePosts.insertAdjacentHTML('afterbegin', `
             <div class="card mb-2" style="width: 18rem;">
             <div class="card-body">
                 <a class="other-profile-id" data-id="${data.creator_id}" href="#"><h5 class="card-title">${data.creator}</h5></a>
@@ -545,63 +546,67 @@ const handleAlerts = (type, msg) => {
     `
 }
 
+//const getProName = document.querySelectorAll('.other-profile-id')
+//console.log('dataset '+ getProName.dataset.id)
+
 /*
+let profileVisible = 3
 const getProfiles = () => {
     //const profileId = $('.other-profile-id').attr('data-id');
-    $(document).on('click', '.other-profile-id', function(e) {
-
+    $(document).on('click', '#other-profile-ids', function(e) {
+    //e.preventDefault();
         var profileId = $(this).data('id');
         //var profileClass = document.getElementsByClassName('other-profile-id');
         //var profileId = profileClass.attr('data-id');
 
         //$('#get-other-profile').load( `other-profile/${profileId} #get-other-profile`);
         console.log(profileId);
-        alert(profileId)
-
+        //alert(profileId)
+        
         $.ajax({
             type: 'GET',
-            url: `other-profile/${visible}`,
-            //cache: false,
-            data: {
-                id: profileId,
-            },
+            url: `other-profile/${profileVisible}`,
+            cache: false,
+            //data: {
+                //id: profileId,
+            //},
             success: function(response) {
                 console.log(response);
                 const otherProfileData = response.single_profile_objs;
-                const otherProfileInfo = response.single_profile_info;
+                //const otherProfileInfo = response.single_profile_info;
                 console.log(otherProfileData);
-                console.log(otherProfileInfo);
+                //console.log(otherProfileInfo);
 
                 
                 /*
                 if (!otherProfileBe) {
                 */
-                /*
+                
                 //if ($('#get-other-profile').is(':empty')//) {
 
                 
                     
-
+                    /*
                     otherProfileStats.innerHTML +=`
                     <div>Profile: ${otherProfileInfo.user}</div>
                     <div>Followers: <span id="change-count">${otherProfileInfo.count}</span></div>
                     <div>Following: ${otherProfileInfo.following}</div>
-                
+                    
                     
                     <form id="follow-unfollow-form" data-follow-id="${otherProfileInfo.id}">
                         <button href="#" class="btn btn-primary" id="follow-unfollow-${otherProfileInfo.id}">${otherProfileInfo.followers ? `Unfollow` : `Follow`}</button>
                     </form>
                     `
-
+                    */
                     
-                    /*
+                    
                     //Donkey follows 2, followers 3
                     //Wango follows 2, followers 2
                     //Man follows 2, followers 3
                     
                 
 
-                
+                    /*
                     otherProfileData.forEach(el => {
                         otherProfilePosts.innerHTML += `
                         <div id="delete-card-id-${el.id}" class="card mb-2" style="width: 18rem;">
@@ -630,33 +635,37 @@ const getProfiles = () => {
                     likeUnlikePosts();
                     getDeletePost();
                 
-                    
+                    /*
                     if(otherProfileInfo.id === user_id) {
                         $('#follow-unfollow-form').hide();
                     } else {
                         $('#follow-unfollow-form').show();
                     };
-
+                    */
                     
                     
 
-                    /*
-                } else {
-                    return false;
+                    
+                //} else {
+                    //return false;
                 // $('#other-profile-posts').empty();
-                };
-                */
-                /*
-                //otherProfileBe = true;
+                //};
                 
+                
+                //otherProfileBe = true;
+                /*
                 if (response.size === 0) {
                     profileEndBox.textContent = 'No posts added yet...'
                 }
                 // Else if size is greater than or = to visible posts then make load more button invisible and add quote instead
-                else if (response.size <= visible) {
+                else if (response.size <= profileVisible) {
                     profileLoadButton.classList.add('not-visible')
                     profileEndBox.textContent = 'No more posts to load...'
                 }
+                setTimeout(() => {
+                    $('#profile-load-btn').show();
+                }, 500);
+
             },
             error: function(error) {
                 console.log(error);
@@ -667,164 +676,192 @@ const getProfiles = () => {
     });
 };
 */
-
 /*
 profileLoadButton.addEventListener('click', () => {
-    visible += 3
-    //getProfiles();
+    console.log("Profile Click")
+    profileVisible += 3
+    getProfiles();
+})
+*/
+/*
+$('body').on('click', '#profile-load-btn', function() {
+    profileVisible += 3
+    getProfiles();
 });
 */
+
 //let otherProfileBe = false;
 // This is for a element .other-profile-id
 //$(document).on('click', '.other-profile-id', function() {
-$(document).on('click', '.other-profile-id', function() {
-    
-    // e.stopPropogation(); allows for innerHTML to be updated on click
-    //e.stopPropagation();
-    //e.preventDefault();
-    //return false;
-    //$('#get-other-profile').empty();
-    $('#get-other-profile').show();
-    if ($('#main-body, #f-posts').is(':visible')) {
-        $('#main-body, #f-posts').hide();
-    }
-    var profileId = $(this).data('id');
-    //const profileId = $('.other-profile-id').data('id');
-    //const profileId = profileVar.d
+//let toProfileLoaded = false;
 
-    //var profileId = $(this).data('id');
-    
-    
+//const otherProfileName = document.querySelectorAll('.other-profile-id')
+//document.addEventListener('click', e => {
+    //if (e.target.matches('.other-profile-id')) {
+//otherProfileName.forEach(proName => {
+    //proName.addEventListener('click', () => {
+let otherOtherVisible = 3
 
-    //$('#follow-load-btn').hide();
-    
-    //$('#profile-load-btn').show();
+$('body').on('click', '.other-profile-id', function() {
+        
+        // e.stopPropogation(); allows for innerHTML to be updated on click
+        //e.stopPropagation();
+        //e.preventDefault();
+        //return false;
+        //$('#get-other-profile').empty();
+        $('#get-other-profile').show();
+        if ($('#main-body, #f-posts').is(':visible')) {
+            $('#main-body, #f-posts').hide();
+        }
+        var profileId = $(this).data('id');
+        //const profileId = $('.other-profile-id').data('id');
+        //const profileId = profileVar.d
 
-    //followPosts.innerHTML = '';
+        //var profileId = $(this).data('id');
+        
+        //getProfiles();
+        //profileLoadButton.addEventListener('click', () => {
+            //visible += 3
+            //getProfiles();
+        //});
 
-    //$('#get-other-profile').load(" #get-other-profile");
-    
-    //.data
-    //var profileId = $(this).attr('data-id');
-    //$('#get-other-profile').load(`other-profile/${profileId} #get-other-profile`);
-    
-    //var profileId = $(this).data('id');
-    //$('#get-other-profile').load( `other-profile/${profileId} #get-other-profile`);
-    console.log(profileId);
-    alert(profileId)
+        //$('#follow-load-btn').hide();
+        
+        //$('#profile-load-btn').show();
 
-    $.ajax({
-        type: 'GET',
-        url: 'other-profile',
-        //cache: false,
-        data: {
-            id: profileId,
-        },
-        success: function(response) {
-            console.log(response);
-            const otherProfileData = response.single_profile_objs;
-            const otherProfileInfo = response.single_profile_info;
-            console.log(otherProfileData);
-            console.log(otherProfileInfo);
+        //followPosts.innerHTML = '';
 
-            
-            /*
-            if (!otherProfileBe) {
-            */
-            
-            //if ($('#get-other-profile').is(':empty')) {
-
-            
-                
-
-                otherProfileStats.innerHTML +=`
-                <div>Profile: ${otherProfileInfo.user}</div>
-                <div>Followers: <span id="change-count">${otherProfileInfo.count}</span></div>
-                <div>Following: ${otherProfileInfo.following}</div>
-            
-                
-                <form id="follow-unfollow-form" data-follow-id="${otherProfileInfo.id}">
-                    <button href="#" class="btn btn-primary" id="follow-unfollow-${otherProfileInfo.id}">${otherProfileInfo.followers ? `Unfollow` : `Follow`}</button>
-                </form>
-                `
+        //$('#get-other-profile').load(" #get-other-profile");
+        
+        //.data
+        //var profileId = $(this).attr('data-id');
+        //$('#get-other-profile').load(`other-profile/${profileId} #get-other-profile`);
+        
+        //var profileId = $(this).data('id');
+        //$('#get-other-profile').load( `other-profile/${profileId} #get-other-profile`);
+        //console.log(profileId);
+        //alert(profileId)
+        
+        $.ajax({
+            type: 'GET',
+            url: 'other-profile',
+            //cache: false,
+            data: {
+                id: profileId,
+            },
+            success: function(response) {
+                console.log(response);
+                const otherProfileData = response.single_profile_objs;
+                const otherProfileInfo = response.single_profile_info;
+                console.log(otherProfileData);
+                console.log(otherProfileInfo);
 
                 
-                /*
-                //Donkey follows 2, followers 3
-               // Wango follows 2, followers 2
-                //Man follows 2, followers 3
-                */
-            
+                
+                //if (!toProfileLoaded) {
+                    
+                    otherProfileStats.innerHTML +=`
+                    <div>Profile: ${otherProfileInfo.user}</div>
+                    <div>Followers: <span id="change-count">${otherProfileInfo.count}</span></div>
+                    <div>Following: ${otherProfileInfo.following}</div>
+                
+                    
+                    <form id="follow-unfollow-form" data-follow-id="${otherProfileInfo.id}">
+                        <button href="#" class="btn btn-primary" id="follow-unfollow-${otherProfileInfo.id}">${otherProfileInfo.followers ? `Unfollow` : `Follow`}</button>
+                    </form>
+                    `
+                    
+                    //getProfiles();
+                    /*
+                    //Donkey follows 2, followers 3
+                // Wango follows 2, followers 2
+                    //Man follows 2, followers 3
+                    */
+                
 
-            
-                otherProfileData.forEach(el => {
-                    otherProfilePosts.innerHTML += `
-                    <div id="delete-card-id-${el.id}" class="card mb-2" style="width: 18rem;">
-                        <div class="card-body">
-                        <h5 class="card-title">${el.creator.name}</h5>
-                            <p class="card-text">${el.content}</p>
-                            <p class="card-text">${el.created_date}</p>
-                        </div>
-                        <div class="card-footer">
-                            <div class="row">
-                                <div class="col">
-                                    <a href="#" id="delete-post-link" class="btn btn-primary deleteP" data-toggle="modal" data-target="#exampleModal" data-post-id="${el.id}">Delete</a>
-                                </div>
-                                <div class="col">
-                                    <form class="like-unlike-forms" data-form-id="${el.id}">
-                                        <button href="#" class="btn btn-primary" id="like-unlike-${el.id}">${el.likes ? `Unlike (${el.count})` : `Like (${el.count})`}</button>
-                                    </form>
+                    
+                    otherProfileData.forEach(el => {
+                        otherProfilePosts.innerHTML += `
+                        <div id="delete-card-id-${el.id}" class="card mb-2" style="width: 18rem;">
+                            <div class="card-body">
+                            <h5 class="card-title">${el.creator.name}</h5>
+                                <p class="card-text">${el.content}</p>
+                                <p class="card-text">${el.created_date}</p>
+                            </div>
+                            <div class="card-footer">
+                                <div class="row">
+                                    <div class="col">
+                                        <a href="#" id="delete-post-link" class="btn btn-primary deleteP" data-toggle="modal" data-target="#exampleModal" data-post-id="${el.id}">Delete</a>
+                                    </div>
+                                    <div class="col">
+                                        <form class="like-unlike-forms" data-form-id="${el.id}">
+                                            <button href="#" class="btn btn-primary" id="like-unlike-${el.id}">${el.likes ? `Unlike (${el.count})` : `Like (${el.count})`}</button>
+                                        </form>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                `
-                });
-
-                if(otherProfileInfo.id === user_id) {
-                    $('#follow-unfollow-form').hide();
-                } else {
-                    $('#follow-unfollow-form').show();
-                };
-                /*
-                setTimeout(() => {
-                    $('#profile-load-btn').show();
-                }, 500);
-                */
-                followUnfollowProfile();
-                likeUnlikePosts();
-                getDeletePost();
-                
-                /*
-                profileLoadButton.addEventListener('click', () => {
-                    visible += 3
+                    `
+                    });
+                    
+                    followUnfollowProfile();
+                    likeUnlikePosts();
+                    getDeletePost();
+                    
                     //getProfiles();
-                });
-                */
+                    
+                    if(otherProfileInfo.id === user_id) {
+                        $('#follow-unfollow-form').hide();
+                    } else {
+                        $('#follow-unfollow-form').show();
+                    };
+                    
+                    
+                    //setTimeout(() => {
+                        //$('#profile-load-btn').show();
+                    //}, 500);
+                    
 
-                //$('#profile-load-btn').click(function() {
-                //    visible += 3
-                //})
+                    
+                    //$('#profile-load-btn').show();
+                    //profileLoadButton.addEventListener('click', () => {
+                        //profileVisible += 3
+                        //getProfiles();
+                    //});
+                    
+                    /*
+                    //$('#profile-load-btn').click(function() {
+                    //    visible += 3
+                    //})
+                
+                    
+                //} else {
+                    //return false;
+                // $('#other-profile-posts').empty();
+                
+                //};
+                
+                
+                //toProfileLoaded = true;
+                
+                //otherProfile.innerHTML = '';
+                */
+            },
+            error: function(error) {
+                console.log(error);
+            }
             
-                /*
-            } else {
-                return false;
-               // $('#other-profile-posts').empty();
-            };
-            */
-            /*
-            //otherProfileBe = true;
-            */
-        },
-        error: function(error) {
-            console.log(error);
-        }
     });
-    
 });
 
 
 
+/*
+$('body').on('click', '#profile-load-btn', function() {
+    profileVisible += 3
+    getProfiles()
+});
+*/
 /*
 //profileName.onClick(function() {
 $('#profile_name').click(function() {
@@ -878,15 +915,16 @@ $('#profile_name').click(function() {
             console.log(error);
         }
     });
-})
+    
+});
 */
 
-
+let followVisible = 3
 
 const followingProfiles = () => {
     $.ajax({
         type: 'GET',
-        url: `follow_posts/${visible}`,
+        url: `follow_posts/${followVisible}`,
         success: function(response) {
             console.log(response);
             const fPosts = response.followed_profiles_objs;
@@ -919,13 +957,18 @@ const followingProfiles = () => {
             likeUnlikePosts();
             getDeletePost();
             //$('#follow-load-btn').show();
-            if (response.size === 0) {
+            console.log("This is for following posts " + response.sizer)
+            setTimeout(() => {
+                $('#follow-load-button').show();
+            }, 500);
+            if (response.sizer === 0) {
                 followEndBox.textContent = 'No posts added yet ...'
             } 
-            else if (response.size <= visible) {
-                followLoadBtn.classList.add('not-visible')
+            else if (response.sizer <= followVisible) {
+                $('#follow-load-button').hide();
                 followEndBox.textContent = 'No more posts to load ...'
             }
+            
         },
         error: function(error) {
             console.log(error);
@@ -942,10 +985,10 @@ $('#follow_posts').on('click', function() {
     if ($('#main-body, #get-other-profile, #all-profile-objs').is(':visible')) {
         $('#main-body, #get-other-profile, #all-profile-objs').hide();
     }
-    
+    $('#profile-load-btn').hide();
 
-    otherProfileStats.innerHTML = '';
-    otherProfilePosts.innerHTML = '';
+    //otherProfileStats.innerHTML = '';
+    //otherProfilePosts.innerHTML = '';
     //postsBox.innerHTML = '';
     //followPosts.innerHTML = '';
     if (!toFollowLoaded) {
@@ -953,14 +996,14 @@ $('#follow_posts').on('click', function() {
     }
     toFollowLoaded = true;
     
-    setTimeout(() => {
-        $('#follow-load-btn').show();
-    }, 500);
-    
+    //setTimeout(() => {
+        //$('#follow-load-btn').show();
+    //}, 500);
 });
 
 followLoadBtn.addEventListener('click', () => {
-    visible += 3
+    console.log("Follow click");
+    followVisible += 3
     followingProfiles();
 });
 
@@ -977,5 +1020,5 @@ social network part 9 has delete functionality
 
 //updateDiv();
 
-
+//getProfiles();
 getData();
