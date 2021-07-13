@@ -166,17 +166,18 @@ def delete_post(request, id):
         post.delete()
         return JsonResponse({'result': 'Post Deleted Successfully'})
 
-def get_other_profile(request):
+def get_other_profile(request, num_posts):
     id = request.GET.get('id')
     user = User.objects.get(id=id)
+    #user = request.user
     profile = Profile.objects.get(user=user)
     print(profile)
-    '''
+    
     visible = 3
     upper = num_posts
     lower = upper - visible
-    size = Post.objects.filter(creator=profile).all().count()
-    '''
+    sized = Post.objects.filter(creator=profile).all().count()
+    
     posts = Post.objects.filter(creator=profile).all()
 
     single_profile_objs = []
@@ -231,7 +232,7 @@ def get_other_profile(request):
     #profile_obj = serializers.serialize('json', posts)
     #print(profile_obj)
 
-    return JsonResponse({'single_profile_objs': single_profile_objs, 'single_profile_info': single_profile_info})
+    return JsonResponse({'single_profile_objs': single_profile_objs[lower:upper], 'sized': sized,  'single_profile_info': single_profile_info})
     #'single_profile_info': single_profile_info
     #context = {'profile': profile}
     #return render(request, 'network.other_profile.html', context)

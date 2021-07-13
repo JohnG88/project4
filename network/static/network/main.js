@@ -547,35 +547,69 @@ const handleAlerts = (type, msg) => {
 }
 
 //const getProName = document.querySelectorAll('.other-profile-id')
-//console.log('dataset '+ getProName.dataset.id)
+//const gId = getProName.forEach(n => {
+    //n.addEventListener('click', () => {
+        //n.getAttribute('data-id')
+    //})
+//})
+//console.log('dataset '+ gId)
+
+
 
 /*
-let profileVisible = 3
 const getProfiles = () => {
+    //const getProName = document.querySelectorAll('.other-profile-id')
+    //getProName.forEach(n => {
+        //console.log("This is get getProName " + n.getAttribute('data-id'))
+//})
     //const profileId = $('.other-profile-id').attr('data-id');
-    $(document).on('click', '#other-profile-ids', function(e) {
+    //$(document).on('click', '.other-profile-id', function(e) {
     //e.preventDefault();
-        var profileId = $(this).data('id');
+        //var profileClass = document.querySelectorAll('.other-profile-id');
+        //console.log("This is profileClass " + profileClass)
+        //profileClass.forEach(n => {
+            //n.addEventListener('click', () => {
+                //console.log(n.getAttribute('data-id'))
+            //})
+        //})
+        //console.log("This is user id " + pc)
+        //var profileId = profileClass.getAttribute('data-id');
+        // var profileId = $(this).data('id');
+        //console.log(
+        //profileClass.forEach(n => {
+            //n.addEventListener('click', () => {
+               //return n.getAttribute('id');
+            //})
+        //}));
+        //console.log('User id ' + getId);
         //var profileClass = document.getElementsByClassName('other-profile-id');
         //var profileId = profileClass.attr('data-id');
 
         //$('#get-other-profile').load( `other-profile/${profileId} #get-other-profile`);
-        console.log(profileId);
+        //console.log(profileId);
         //alert(profileId)
+        //const getProName = document.querySelectorAll('.other-profile-id')
+        //getProName.forEach(n => {
+            //n.addEventListener('click', e => {
+                //e.preventDefault();
+                //const getId = e.target.getAttribute('data-id')
+                //console.log("This is getId " + getId)
+            
+        
         
         $.ajax({
             type: 'GET',
             url: `other-profile/${profileVisible}`,
-            cache: false,
-            //data: {
-                //id: profileId,
-            //},
+            //cache: false,
+            data: {
+                id: profileId
+            },
             success: function(response) {
                 console.log(response);
                 const otherProfileData = response.single_profile_objs;
-                //const otherProfileInfo = response.single_profile_info;
+                const otherProfileInfo = response.single_profile_info;
                 console.log(otherProfileData);
-                //console.log(otherProfileInfo);
+                console.log(otherProfileInfo);
 
                 
                 /*
@@ -597,7 +631,7 @@ const getProfiles = () => {
                         <button href="#" class="btn btn-primary" id="follow-unfollow-${otherProfileInfo.id}">${otherProfileInfo.followers ? `Unfollow` : `Follow`}</button>
                     </form>
                     `
-                    */
+                    
                     
                     
                     //Donkey follows 2, followers 3
@@ -606,7 +640,7 @@ const getProfiles = () => {
                     
                 
 
-                    /*
+                    
                     otherProfileData.forEach(el => {
                         otherProfilePosts.innerHTML += `
                         <div id="delete-card-id-${el.id}" class="card mb-2" style="width: 18rem;">
@@ -670,19 +704,15 @@ const getProfiles = () => {
             error: function(error) {
                 console.log(error);
             }
-        });
-        e.stopImmediatePropagation();
-        return false;
+        //});
+        //e.stopImmediatePropagation();
+        //return false;
     });
 };
 */
-/*
-profileLoadButton.addEventListener('click', () => {
-    console.log("Profile Click")
-    profileVisible += 3
-    getProfiles();
-})
-*/
+
+
+
 /*
 $('body').on('click', '#profile-load-btn', function() {
     profileVisible += 3
@@ -700,54 +730,27 @@ $('body').on('click', '#profile-load-btn', function() {
     //if (e.target.matches('.other-profile-id')) {
 //otherProfileName.forEach(proName => {
     //proName.addEventListener('click', () => {
-let otherOtherVisible = 3
-
+//let otherOtherVisible = 3
+let profileVisible = 3
 $('body').on('click', '.other-profile-id', function() {
         
-        // e.stopPropogation(); allows for innerHTML to be updated on click
-        //e.stopPropagation();
-        //e.preventDefault();
-        //return false;
-        //$('#get-other-profile').empty();
-        $('#get-other-profile').show();
-        if ($('#main-body, #f-posts').is(':visible')) {
-            $('#main-body, #f-posts').hide();
-        }
-        var profileId = $(this).data('id');
-        //const profileId = $('.other-profile-id').data('id');
-        //const profileId = profileVar.d
-
-        //var profileId = $(this).data('id');
-        
-        //getProfiles();
-        //profileLoadButton.addEventListener('click', () => {
-            //visible += 3
-            //getProfiles();
-        //});
-
-        //$('#follow-load-btn').hide();
-        
-        //$('#profile-load-btn').show();
-
-        //followPosts.innerHTML = '';
-
-        //$('#get-other-profile').load(" #get-other-profile");
-        
-        //.data
-        //var profileId = $(this).attr('data-id');
-        //$('#get-other-profile').load(`other-profile/${profileId} #get-other-profile`);
-        
-        //var profileId = $(this).data('id');
-        //$('#get-other-profile').load( `other-profile/${profileId} #get-other-profile`);
-        //console.log(profileId);
-        //alert(profileId)
-        
+    // e.stopPropogation(); allows for innerHTML to be updated on click
+    //e.stopPropagation();
+    //e.preventDefault();
+    //return false;
+    //$('#get-other-profile').empty();
+    $('#get-other-profile').show();
+    if ($('#main-body, #f-posts').is(':visible')) {
+        $('#main-body, #f-posts').hide();
+    }
+    var profileId = $(this).data('id');
+    const getProfiles = () => {
         $.ajax({
             type: 'GET',
-            url: 'other-profile',
+            url: `other-profile/${profileVisible}`,
             //cache: false,
             data: {
-                id: profileId,
+                id: profileId
             },
             success: function(response) {
                 console.log(response);
@@ -757,26 +760,32 @@ $('body').on('click', '.other-profile-id', function() {
                 console.log(otherProfileInfo);
 
                 
+                /*
+                if (!otherProfileBe) {
+                */
                 
-                //if (!toProfileLoaded) {
+                //if ($('#get-other-profile').is(':empty')//) {
+
+                
+                    
                     
                     otherProfileStats.innerHTML +=`
                     <div>Profile: ${otherProfileInfo.user}</div>
                     <div>Followers: <span id="change-count">${otherProfileInfo.count}</span></div>
                     <div>Following: ${otherProfileInfo.following}</div>
-                
+                    
                     
                     <form id="follow-unfollow-form" data-follow-id="${otherProfileInfo.id}">
                         <button href="#" class="btn btn-primary" id="follow-unfollow-${otherProfileInfo.id}">${otherProfileInfo.followers ? `Unfollow` : `Follow`}</button>
                     </form>
                     `
                     
-                    //getProfiles();
-                    /*
+                    
+                    
                     //Donkey follows 2, followers 3
-                // Wango follows 2, followers 2
+                    //Wango follows 2, followers 2
                     //Man follows 2, followers 3
-                    */
+                    
                 
 
                     
@@ -803,56 +812,63 @@ $('body').on('click', '.other-profile-id', function() {
                         </div>
                     `
                     });
-                    
+
                     followUnfollowProfile();
                     likeUnlikePosts();
                     getDeletePost();
-                    
-                    //getProfiles();
-                    
+                
+                    /*
                     if(otherProfileInfo.id === user_id) {
                         $('#follow-unfollow-form').hide();
                     } else {
                         $('#follow-unfollow-form').show();
                     };
+                    */
                     
-                    
-                    //setTimeout(() => {
-                        //$('#profile-load-btn').show();
-                    //}, 500);
                     
 
-                    
-                    //$('#profile-load-btn').show();
-                    //profileLoadButton.addEventListener('click', () => {
-                        //profileVisible += 3
-                        //getProfiles();
-                    //});
-                    
-                    /*
-                    //$('#profile-load-btn').click(function() {
-                    //    visible += 3
-                    //})
-                
                     
                 //} else {
                     //return false;
                 // $('#other-profile-posts').empty();
-                
                 //};
                 
                 
-                //toProfileLoaded = true;
+                //otherProfileBe = true;
                 
-                //otherProfile.innerHTML = '';
-                */
+                if (response.sized === 0) {
+                    profileEndBox.textContent = 'No posts added yet...'
+                }
+                // Else if size is greater than or = to visible posts then make load more button invisible and add quote instead
+                else if (response.sized <= profileVisible) {
+                    profileLoadButton.classList.add('not-visible')
+                    profileEndBox.textContent = 'No more posts to load...'
+                }
+                setTimeout(() => {
+                    $('#profile-load-btn').show();
+                }, 500);
+
             },
             error: function(error) {
                 console.log(error);
             }
-            
+        //});
+        //e.stopImmediatePropagation();
+        //return false;
+    
+
+
     });
+    }
+    getProfiles();
+    profileLoadButton.addEventListener('click', () => {
+        console.log("Profile Click")
+        profileVisible += 3
+        getProfiles();
+    })
 });
+
+
 
 
 
