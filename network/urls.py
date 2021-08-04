@@ -7,6 +7,7 @@ urlpatterns = [
     path("", views.index, name="index"),
     #path('profile_page', views.profile_page, name="profile_page"),
     path('other-profile/<int:num_posts>', views.get_other_profile, name='other-profile'),
+    path('get-profile-stats', views.get_profile_stats, name='get-profile-stats'),
     path('like-unlike/', views.like_unlike_post, name='like-unlike'),
     path('follow_posts/<int:num_posts>', views.following_posts, name='follow_posts'),
     path('update_follow/<int:id>', views.update_follow, name='update_follow'),

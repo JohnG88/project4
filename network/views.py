@@ -12,6 +12,7 @@ from .models import *
 
 from django.core import serializers
 import json
+from django.views.decorators.cache import never_cache
 
 
 def index(request):
@@ -165,6 +166,23 @@ def delete_post(request, id):
     if request.method == 'POST':
         post.delete()
         return JsonResponse({'result': 'Post Deleted Successfully'})
+        
+def get_profile_stats(request):
+    id = request.GET.get('id')
+    user = User.objects.get(id=id)
+    #user = request.user
+    profile = Profile.objects.get(user=user)
+    print(profile)
+
+    single_profile_info = {
+        'id': user.id,
+        'user': profile.user.username,
+        'followers': True if profile in request.user.get_followed_profiles.all() else False,
+        'count': profile.get_following_count,
+        'following': user.get_followed_profiles.all().count(),
+    }
+
+    return JsonResponse({'single_profile_info': single_profile_info})
 
 def get_other_profile(request, num_posts):
     id = request.GET.get('id')
@@ -179,7 +197,7 @@ def get_other_profile(request, num_posts):
     sized = Post.objects.filter(creator=profile).all().count()
     
     posts = Post.objects.filter(creator=profile).all()
-
+    print(posts)
     single_profile_objs = []
     for spd in posts:
         spd_item = {
@@ -196,6 +214,8 @@ def get_other_profile(request, num_posts):
     page_number = request.GET.get('page')
     page_obj = paginate_single_profile_objs.get_page(page_number)
     '''
+    # These are fro get_profile_stats
+    '''
     single_profile_info = {
         'id': user.id,
         'user': profile.user.username,
@@ -203,6 +223,7 @@ def get_other_profile(request, num_posts):
         'count': profile.get_following_count,
         'following': user.get_followed_profiles.all().count(),
     }
+    '''
     """
     Man is follwed by Donkey, Wango, Comal. Man follows Wango, Donkey
     Wango is followed by Donkey, Man. Wango follows Man, Donkey
@@ -232,7 +253,7 @@ def get_other_profile(request, num_posts):
     #profile_obj = serializers.serialize('json', posts)
     #print(profile_obj)
 
-    return JsonResponse({'single_profile_objs': single_profile_objs[lower:upper], 'sized': sized,  'single_profile_info': single_profile_info})
+    return JsonResponse({'single_profile_objs': single_profile_objs[lower:upper], 'sized': sized})
     #'single_profile_info': single_profile_info
     #context = {'profile': profile}
     #return render(request, 'network.other_profile.html', context)
