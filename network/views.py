@@ -72,11 +72,13 @@ def like_unlike_post(request):
     # was semi-copying video of how to use ajax in django, the I was getting lazyobject type error in terminal because likes has a manytomany relation to Profile> So added two lines below and added profile in if statement, did not think of this myself got it from stack overflow. Now in console it produces {likes: false, count: 0} if profile already liked post and {likes: true, count: 1} if they haven't.
     user = request.user
     profile = Profile.objects.get(user=user)
+    print(profile)
     if request.is_ajax:
         # below is getting 'pk' from ajax in data:
             # 'pk': clickedId        
         pk = request.POST.get('pk')
         obj = Post.objects.get(pk=pk)
+        
         # If profile is in the object liked all field
         if profile in obj.likes.all():
             likes = False
@@ -84,6 +86,7 @@ def like_unlike_post(request):
         else:
             likes = True
             obj.likes.add(profile)
+        print(obj.likes.all())
         return JsonResponse({'likes': likes, 'count': obj.like_count})
 """
 def profile_page(request):
@@ -187,7 +190,7 @@ def get_profile_stats(request):
 def get_other_profile(request, num_posts):
     id = request.GET.get('id')
     user = User.objects.get(id=id)
-    #user = request.user
+    mainUser = Profile.objects.get(user=request.user)
     profile = Profile.objects.get(user=user)
     print(profile)
     
@@ -204,11 +207,12 @@ def get_other_profile(request, num_posts):
             'id': spd.id,
             'content': spd.content,
             'created_date': spd.created_date,
-            'likes': True if profile in spd.likes.all() else False,
+            'likes': True if mainUser in spd.likes.all() else False,
             'count': spd.like_count,
             'creator': {'name': spd.creator.user.username, 'id': spd.creator.user.id}
         }
         single_profile_objs.append(spd_item)
+        print(single_profile_objs)
     '''
     paginate_single_profile_objs = Paginator(single_profile_objs, 3)
     page_number = request.GET.get('page')
