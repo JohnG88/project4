@@ -1,4 +1,25 @@
-#all-profile-objs, #follow-load-button, #profile-end-box, #profile-start-box, #profile-no-box {
+#all-profile-objs, #profile-end-box, #profile-start-box, #profile-no-box, #follow-start-box, #follow-no-box, #follow-end-box, .errorlist, #start-box, #no-box {
     display: none;
 }
 
+.card {
+    margin-left: 20px;
+}
+
+#post-form {
+    margin-left: 20px;
+    margin-bottom: 20px;
+}
+
+#in-submit {
+    padding: 5px;
+}
+
+#id_content {
+    padding: 4px;
+}
+/*
+#modal-input {
+    padding-right: 50px;
+}
+*/

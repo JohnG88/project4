@@ -46,66 +46,6 @@ $('#close-x').click(function() {
     modalBody.innerHTML = '';
 })
 
-//$('#follow-load-btn').hide();
-
-/*
-$('#profile-name').click(function() {
-    $('#all-profile-objs').show();
-    if ($('#main-body, #get-other-profile').is(':visible')) {
-        $('#main-body, #get-other-profile').hide();
-    }
-});
-*/
-
-$('#all-posts').click(function() {
-    $('#main-body').show();
-    if ($('#all-profile-objs, #get-other-profile, #f-posts').is(':visible')) {
-        $('#all-profile-objs, #get-other-profile,#f-posts').hide();
-    }
-    //$('#profile-load-btn').hide();
-    //$('#get-other-profile').load(" #get-other-profile");
-    // for profile page, #get-other-profile,
-    //alertBox.innerHTML = '';
-    $('alert-box').hide();
-    otherProfileStats.innerHTML = '';
-    otherProfilePosts.innerHTML = '';
-    $('#profile-no-box').hide();
-
-    //profileLoadButton.removeEventListener('click')
-
-    //profileEndBox.innerHTML = '';
-    //$('#profile-load-btn').show();
-    //$('#profile-end-box').hide();
-    //profileLoadButton.classList.remove('not-visible');
-    //profileEndBox.classList.add('not-visible');
-    //profileEndBox.innerHTML = '';
-    //profileLoadButton.innerHTML = '';
-    //followPosts.innerHTML = '';
-    //profileBox.innerHTML = '';
-    //profileObjs.innerHTML = '';
-});
-/*
-- Needed to take off quotes from middle of ids of if statement it is fixed now.
-
-$('.other-profile-id').click(function() {
-    $('#get-other-profile').show();
-    if ($('#main-body, #all-profile-objs').is(':visible')) {
-        $('#main-body, #all-profile-objs').hide();
-    }
-})
-*/
-
-/*
-profileName.click(function() {
-    profileBox.show(function() {
-        if (mainBody.is(':visible')) {
-            mainBody.hide();
-        }
-    })
-})
-*/
-
-
 
 function getCookie(name) {
     let cookieValue = null;
@@ -239,7 +179,7 @@ const getPost = () => {
 
                 modalBody.innerHTML += `
                 <form method="post" id="edit-post-form" data-edit-form-id="${postData.id}">
-                    <input type="text" class="input-id" name="edit-content-input">
+                    <input id="modal-input" type="text" class="form-control" name="edit-content-input">
                 
                     <div class="modal-footer" id="submit-footer">
                         <input id="submit-footer-btn" type="submit" class="btn btn-primary save-edit-button" data-id="${postData.id}" value="Save Edit">
@@ -247,7 +187,7 @@ const getPost = () => {
                 </form>
                 `
 
-                $('.input-id').val(`${postData.content}`)
+                $('#modal-input').val(`${postData.content}`)
 
                 editOnlyPost();
             },
@@ -270,7 +210,7 @@ const editOnlyPost = () => {
         //modalBody.innerHTML = '';
         const editPostId = $(this).data('edit-form-id');
         //const editPostId = $(this).data('post-id')
-        const editContent = $('.input-id').val()
+        const editContent = $('#modal-input').val()
         //const oldContent = getElementById('old-content')
         console.log('This id of post ' + editPostId);
         console.log('This is new content ' + editContent)
@@ -291,7 +231,7 @@ const editOnlyPost = () => {
                 $('#exampleModal').modal('hide');
                 
                 // Add a dynamic id to element to change that element, in this case, `content-update-${response.id}` is from p element that holds ${el.content} from getData function in postsBox.innerHTML
-                document.getElementById(`content-update-${response.id}`).innerHTML = response.content;
+                document.getElementById(`content-update-${response.id}`).innerText = response.content;
                 
                 
                 
@@ -400,6 +340,28 @@ const deletePost = () => {
     });
 };
 
+
+$('#all-posts').click(function() {
+    postsBox.innerHTML = '';
+    $('#main-body').show();
+    if ($('#all-profile-objs, #get-other-profile, #f-posts').is(':visible')) {
+        $('#all-profile-objs, #get-other-profile,#f-posts').hide();
+    }
+
+
+    $('alert-box').hide();
+    otherProfileStats.innerHTML = '';
+    otherProfilePosts.innerHTML = '';
+    $('#profile-no-box').hide();
+    $('#all-follow-boxes').hide();
+    $('#all-profile-boxes').hide();
+    $('#all-posts-footers').hide();
+    
+    visible = 3
+    getData();
+
+});
+
 let visible = 3
 
 const getData = () => {
@@ -413,19 +375,83 @@ const getData = () => {
             console.log('This is 3 per click posts ' + data);
             //const dataName = response.data.name
 
+
+
+            data.forEach(el => {
+                const postDiv = document.createElement('div');
+                postDiv.id = `delete-card-id-${el.id}`;
+                postDiv.classList.add('card', 'mb-2')
+                postDiv.style.width = '30rem';
+    
+                const cardBodyDiv = document.createElement('div');
+                cardBodyDiv.classList.add('card-body');
+                postDiv.append(cardBodyDiv);
+    
+                const profileNameLink = document.createElement('a');
+                profileNameLink.id = 'other-profile-ids';
+                profileNameLink.classList.add('other-profile-id');
+                profileNameLink.dataset.id = `${el.creator.id}`;
+                profileNameLink.href = '#'
+                cardBodyDiv.append(profileNameLink)
+    
+                const creatorName = document.createElement('h5');
+                creatorName.classList.add('card-title');
+                creatorName.textContent = `${el.creator.name}`;
+                profileNameLink.append(creatorName)
+    
+                const dataInput = document.createElement('p');
+                dataInput.id = `content-update-${el.id}`;
+                dataInput.classList.add('card-text', 'c-t');
+                dataInput.innerText = `${el.content}`;
+                cardBodyDiv.append(dataInput);
+    
+                const dateInput = document.createElement('p');
+                dateInput.classList.add('card-text');
+                dateInput.textContent = `${el.created_date}`;
+                cardBodyDiv.append(dateInput);
+    
+                const bottomDiv = document.createElement('div');
+                bottomDiv.classList.add('card-footer');
+                postDiv.append(bottomDiv)
+    
+                const rowDiv = document.createElement('div');
+                rowDiv.classList.add('row')
+                bottomDiv.append(rowDiv);
+    
+                const colDiv = document.createElement('div');
+                colDiv.classList.add('col');
+                rowDiv.append(colDiv);
+    
+                const likeForm = document.createElement('form')
+                likeForm.classList.add('like-unlike-forms');
+                likeForm.dataset.formId = `${el.id}`;
+                colDiv.append(likeForm);
+    
+                const likeButton = document.createElement('button');
+                likeButton.href = '#';
+                likeButton.id = `like-unlike-${el.id}`;
+                likeButton.classList.add('btn', 'btn-primary');
+                likeButton.textContent = `${el.likes ? `Unlike (${el.count})` : `Like (${el.count})`}`;
+                likeForm.append(likeButton);
+
+                postsBox.append(postDiv);
+            });
+            /*
             data.forEach(el => {
                 postsBox.innerHTML += `
-                <div id="delete-card-id-${el.id}" class="card mb-2" style="width: 18rem;">
-                    <div class="card-body">
+                <div id="delete-card-id-${el.id}" class="card mb-2" style="width: 30rem;">
+                    <div id="last-div" class="card-body">
                     <a id="other-profile-ids" class="other-profile-id" data-id="${el.creator.id}" href="#"><h5 class="card-title">${el.creator.name}</h5></a>
                         <p id="content-update-${el.id}" class="card-text c-t">${el.content}</p>
                         <p class="card-text">${el.created_date}</p>
                     </div>
                     <div class="card-footer">
                         <div class="row">
+                        ${/*
                             <div class="col">
                                 <a href="#" id="editP" class="btn btn-primary ePost" data-toggle="modal" data-target="#exampleModal" data-post-id="${el.id}">Edit</a>
                             </div>
+                        ''}
                             <div class="col">
                                 <form class="like-unlike-forms" data-form-id="${el.id}">
                                     <button href="#" class="btn btn-primary" id="like-unlike-${el.id}">${el.likes ? `Unlike (${el.count})` : `Like (${el.count})`}</button>
@@ -435,13 +461,42 @@ const getData = () => {
                     </div>
                 </div>
                 `
-
-
-            });
+                */
+                /*
+                if (el.creator.id !== user_id) {
+                    $('.ePost').hide();
+                } else if (el.creator.id == user_id) {
+                    $('.ePost').show();
+                };
+                */
+            //});
                 
             
             getPost();
             likeUnlikePosts();
+            $('#all-posts-footers').show();
+            $('#all-profile-boxes').hide();
+            $('#all-follow-boxes').hide();
+
+            if (response.size === 0) {
+                //profileEndBox.textContent = 'No posts added yet...'
+                $('#start-box').show();
+                $('#end-box').hide();
+                $('#no-box').hide();
+            }
+            // Else if size is greater than or = to visible posts then make load more button invisible and add quote instead
+            //(response.sized <= profileVisible)
+            else if (response.size <= visible) {
+                $('#end-box').hide();
+                $('#start-box').hide();
+                $('#no-box').show();
+                //profileEndBox.textContent = 'No more posts to load...'
+            } else {
+                $('#no-box').hide();
+                setTimeout(() => {
+                    $('#end-box').show();
+                }, 500);
+            }
             
             // Line below gets posts_ser from django view
             //const data = JSON.parse(response.posts_ser);
@@ -450,23 +505,43 @@ const getData = () => {
     
             //${el.content} - <b>${el.created_date}</b> - <p>${el.creator}</p><br>
             // Line below pops out a 7 in console, size id s from django view getAjax
-            console.log('This for all posts ' + response.size)
+            //console.log('This for all posts ' + response.size)
             // If size is 0 then add this quote to endBox 
-            if (response.size === 0) {
-                endBox.textContent = 'No posts added yet...'
-            }
+            //if (response.size === 0) {
+                //endBox.textContent = 'No posts added yet...'
+            //}
             // Else if size is greater than or = to visible posts then make load more button invisible and add quote instead
-            else if (response.size <= visible) {
+            //else if (response.size <= visible) {
                 //loadBtn.classList.add('not-visible')
-                $('#load-btn').hide();
-                endBox.textContent = 'No more posts to load...'
-            }
+                //$('#load-btn').hide();
+                //endBox.textContent = 'No more posts to load...'
+            //}
+
         },
         error: function(err) {
             console.log(err);
         }
     });
 }
+
+
+getData();
+
+const footerDiv = document.querySelector('#all-posts-footers');
+const nextDiv = document.createElement('div');
+nextDiv.id = 'start-box';
+nextDiv.classList.add('text-center', 'mb-3');
+nextDiv.textContent = 'No posts added yet...'
+
+const lastDiv = document.createElement('div');
+lastDiv.id = 'no-box';
+lastDiv.classList.add('text-center', 'mb-3');
+lastDiv.textContent = 'No more posts to load...'
+
+footerDiv.append(nextDiv, lastDiv)
+
+
+
 
 loadBtn.addEventListener('click', () => {
     visible += 3
@@ -483,20 +558,85 @@ postForm.addEventListener('submit', e => {
             content: $('#id_content').val(),
             csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
         },
+
         success: function(data) {
             console.log(data)
+
+            const postDiv = document.createElement('div');
+            postDiv.id = `delete-card-id-${data.id}`;
+            postDiv.classList.add('card', 'mb-2')
+            postDiv.style.width = '30rem';
+
+            const cardBodyDiv = document.createElement('div');
+            cardBodyDiv.classList.add('card-body');
+            postDiv.append(cardBodyDiv);
+
+            const profileNameLink = document.createElement('a');
+            profileNameLink.id = 'other-profile-ids';
+            profileNameLink.classList.add('other-profile-id');
+            profileNameLink.dataset.id = `${data.creator_id}`;
+            profileNameLink.href = '#'
+            cardBodyDiv.append(profileNameLink)
+
+            const creatorName = document.createElement('h5');
+            creatorName.classList.add('card-title');
+            creatorName.textContent = `${data.creator}`;
+            profileNameLink.append(creatorName)
+
+            const dataInput = document.createElement('p');
+            dataInput.classList.add('card-text');
+            dataInput.innerText = `${data.content}`;
+            cardBodyDiv.append(dataInput);
+
+            const dateInput = document.createElement('p');
+            dateInput.classList.add('card-text');
+            dateInput.textContent = `${data.created_date}`;
+            cardBodyDiv.append(dateInput);
+
+            const bottomDiv = document.createElement('div');
+            bottomDiv.classList.add('card-footer');
+            postDiv.append(bottomDiv)
+
+            const rowDiv = document.createElement('div');
+            rowDiv.classList.add('row')
+            bottomDiv.append(rowDiv);
+
+            const colDiv = document.createElement('div');
+            colDiv.classList.add('col');
+            rowDiv.append(colDiv);
+
+            const likeForm = document.createElement('form')
+            likeForm.classList.add('like-unlike-forms');
+            likeForm.dataset.formId = `${data.id}`;
+            colDiv.append(likeForm);
+
+            const likeButton = document.createElement('button');
+            likeButton.href = '#';
+            likeButton.id = `like-unlike-${data.id}`;
+            likeButton.classList.add('btn', 'btn-primary');
+            likeButton.textContent = 'Like (0)';
+            likeForm.append(likeButton);
+            
+            //const lastDiv = document.querySelector('#last-div');
+            //postsBox.insertBefore(postDiv, lastDiv.nextSibling);
+
+            postsBox.prepend(postDiv);
+
+            /*
             postsBox.insertAdjacentHTML('afterbegin', `
-                <div id="delete-card-id-${data.id}" class="card mb-2" style="width: 18rem;">
+                <div id="delete-card-id-${data.id}" class="card mb-2" style="width: 30rem;">
                     <div class="card-body">
                         <a id="other-profile-ids" class="other-profile-id" data-id="${data.creator_id}" href="#"><h5 class="card-title">${data.creator}</h5></a>
-                        <p id="content-update-${data.id}" class="card-text">${data.content}</p>
+                        <p class="card-text">${data.content}</p>
                         <p class="card-text">${data.created_date}</p>
                     </div>
                     <div class="card-footer">
                         <div class="row">
+                        ${/*
                             <div class="col">
                                 <a href="#" id="editP" class="btn btn-primary ePost" data-toggle="modal" data-target="#exampleModal" data-post-id="${data.id}">Edit</a>
                             </div>
+                    ''}
                             <div class="col">
                                 <form class="like-unlike-forms" data-form-id="${data.id}">
                                     <button href="#" class="btn btn-primary" id="like-unlike-${data.id}">Like (0)</button>
@@ -506,7 +646,7 @@ postForm.addEventListener('submit', e => {
                     </div>
                 </div>
             `)
-            
+            */
             /*
             otherProfilePosts.insertAdjacentHTML('afterbegin', `
             <div class="card mb-2" style="width: 18rem;">
@@ -558,11 +698,13 @@ const handleAlerts = (type, msg) => {
     `
 }
 
-
+console.log($('#id_content'))
 
 
 $(document).on('click', '.other-profile-id', function(e) {    
-
+    $('#profile-end-box').hide();
+    otherProfilePosts.innerHTML = '';
+    otherProfileStats.innerHTML = '';
     e.preventDefault();
     $('#get-other-profile').show();
     if ($('#main-body, #f-posts').is(':visible')) {
@@ -605,6 +747,11 @@ $(document).on('click', '.other-profile-id', function(e) {
             `
             profileVisible = 3
             changeProfilePage();
+            if(otherProfileInfo.id === user_id) {
+                $('#follow-unfollow-form').hide();
+            } else {
+                $('#follow-unfollow-form').show();
+            };
             
             
         },
@@ -640,34 +787,148 @@ const changeProfilePage = () => {
                 console.log(otherProfileData);
                 //console.log(otherProfileInfo);
                 
+                otherProfileData.forEach(el => {
+                const postDiv = document.createElement('div');
+                postDiv.id = `delete-card-id-${el.id}`;
+                postDiv.classList.add('card', 'mb-2')
+                postDiv.style.width = '30rem';
+    
+                const cardBodyDiv = document.createElement('div');
+                cardBodyDiv.classList.add('card-body');
+                postDiv.append(cardBodyDiv);
+    
+                // const profileNameLink = document.createElement('a');
+                // profileNameLink.id = 'other-profile-ids';
+                // profileNameLink.classList.add('other-profile-id');
+                // profileNameLink.dataset.id = `${el.creator.id}`;
+                // profileNameLink.href = '#'
+                // cardBodyDiv.append(profileNameLink)
+    
+                const creatorName = document.createElement('h5');
+                creatorName.classList.add('card-title');
+                creatorName.textContent = `${el.creator.name}`;
+                cardBodyDiv.append(creatorName)
+    
+                const dataInput = document.createElement('p');
+                dataInput.id = `content-update-${el.id}`;
+                dataInput.classList.add('card-text', 'c-t');
+                dataInput.innerText = `${el.content}`;
+                cardBodyDiv.append(dataInput);
+    
+                const dateInput = document.createElement('p');
+                dateInput.classList.add('card-text');
+                dateInput.textContent = `${el.created_date}`;
+                cardBodyDiv.append(dateInput);
+    
+                const bottomDiv = document.createElement('div');
+                bottomDiv.classList.add('card-footer');
+                postDiv.append(bottomDiv)
+    
+                const rowDiv = document.createElement('div');
+                rowDiv.classList.add('row')
+                bottomDiv.append(rowDiv);
+    
+                const colDiv = document.createElement('div');
+                colDiv.classList.add('col', 'first-col-div');
+                rowDiv.append(colDiv);
 
-        
+                const postEditLink = document.createElement('a');
+                postEditLink.href = '#'
+                postEditLink.id = 'editP';
+                postEditLink.classList.add('btn', 'btn-primary', 'ePost');
+                postEditLink.dataset.toggle = 'modal';
+                postEditLink.dataset.target = '#exampleModal';
+                postEditLink.dataset.postId = `${el.id}`;
+                postEditLink.textContent = 'Edit';
+                colDiv.append(postEditLink)
+
+                const secondColDiv = document.createElement('div');
+                secondColDiv.classList.add('col', 'second-col-div');
+                rowDiv.append(secondColDiv);
+
+                const postDeleteLink = document.createElement('a');
+                postDeleteLink.href = '#'
+                postDeleteLink.id = 'delete-post-link';
+                postDeleteLink.classList.add('btn', 'btn-primary', 'deleteP');
+                postDeleteLink.dataset.toggle = 'modal';
+                postDeleteLink.dataset.target = '#exampleModal';
+                postDeleteLink.dataset.postId = `${el.id}`;
+                postDeleteLink.textContent = 'Delete';
+                secondColDiv.append(postDeleteLink)
+
+                const thirdColDiv = document.createElement('div');
+                thirdColDiv.classList.add('col', 'third-col-div');
+                rowDiv.append(thirdColDiv);
+    
+                const likeForm = document.createElement('form')
+                likeForm.classList.add('like-unlike-forms');
+                likeForm.dataset.formId = `${el.id}`;
+                thirdColDiv.append(likeForm);
+    
+                const likeButton = document.createElement('button');
+                likeButton.href = '#';
+                likeButton.id = `like-unlike-${el.id}`;
+                likeButton.classList.add('btn', 'btn-primary');
+                likeButton.textContent = `${el.likes ? `Unlike (${el.count})` : `Like (${el.count})`}`;
+                likeForm.append(likeButton);
+
+
+
+                otherProfilePosts.append(postDiv);
+
+                if(el.creator_id === user_id) {
+                    $('.first-col-div').show();
+                    $('.second-col-div').show();
+                    $('.third-col-div').remove();
+                } else {
+                    $('.first-col-div').remove();
+                    $('.second-col-div').remove();
+                    $('.third-col-div').show();
+                };
+            });
+            /*
             otherProfileData.forEach(el => {
                 otherProfilePosts.innerHTML += `
                 <div id="delete-card-id-${el.id}" class="card mb-2" style="width: 18rem;">
                     <div class="card-body">
                     <h5 class="card-title">${el.creator.name}</h5>
-                        <p class="card-text">${el.content}</p>
+                        <p id="content-update-${el.id}" class="card-text">${el.content}</p>
                         <p class="card-text">${el.created_date}</p>
                     </div>
                     <div class="card-footer">
                         <div class="row">
                             <div class="col">
+                                <a href="#" id="editP" class="btn btn-primary ePost" data-toggle="modal" data-target="#exampleModal" data-post-id="${el.id}">Edit</a>
+                            </div>
+                            <div class="col">
                                 <a href="#" id="delete-post-link" class="btn btn-primary deleteP" data-toggle="modal" data-target="#exampleModal" data-post-id="${el.id}">Delete</a>
                             </div>
+                            ${/*
                             <div class="col">
                                 <form class="like-unlike-forms" data-form-id="${el.id}">
                                     <button href="#" class="btn btn-primary" id="like-unlike-${el.id}">${el.likes ? `Unlike (${el.count})` : `Like (${el.count})`}</button>
                                 </form>
                             </div>
+                            ''}
                         </div>
                     </div>
                 </div>
             `
+            if(el.creator_id === user_id) {
+                $('.deleteP').show();
+            } else {
+                $('.deleteP').remove();
+            };
+
             });
+            */
+            getPost();
             likeUnlikePosts();
             getDeletePost();
             followUnfollowProfile();
+            $('#all-profile-boxes').show();
+            $('#all-follow-boxes').hide();
+            $('#all-posts-footers').hide();
             if (response.sized === 0) {
                 //profileEndBox.textContent = 'No posts added yet...'
                 $('#profile-start-box').show();
@@ -687,7 +948,9 @@ const changeProfilePage = () => {
                     $('#profile-end-box').show();
                 }, 500);
             }
+            console.log('This is creator id ' + otherProfileData.creator_id);
             //profileVisible = 3
+            
             
         },
         error: function(error) {
@@ -781,6 +1044,7 @@ $('#profile_name').click(function() {
 let followVisible = 3
 
 const followingProfiles = () => {
+
     $.ajax({
         type: 'GET',
         url: `follow_posts/${followVisible}`,
@@ -789,10 +1053,83 @@ const followingProfiles = () => {
             const fPosts = response.followed_profiles_objs;
             console.log(fPosts)
 
+            fPosts.forEach(el => {
+                const postDiv = document.createElement('div');
+                postDiv.id = `delete-card-id-${el.id}`;
+                postDiv.classList.add('card', 'mb-2')
+                postDiv.style.width = '30rem';
+    
+                const cardBodyDiv = document.createElement('div');
+                cardBodyDiv.classList.add('card-body');
+                postDiv.append(cardBodyDiv);
+    
+                const profileNameLink = document.createElement('a');
+                profileNameLink.id = 'other-profile-ids';
+                profileNameLink.classList.add('other-profile-id');
+                profileNameLink.dataset.id = `${el.creator.id}`;
+                profileNameLink.href = '#'
+                cardBodyDiv.append(profileNameLink)
+    
+                const creatorName = document.createElement('h5');
+                creatorName.classList.add('card-title');
+                creatorName.textContent = `${el.creator.name}`;
+                cardBodyDiv.append(creatorName)
+    
+                const dataInput = document.createElement('p');
+                dataInput.id = `content-update-${el.id}`;
+                dataInput.classList.add('card-text', 'c-t');
+                dataInput.innerText = `${el.content}`;
+                cardBodyDiv.append(dataInput);
+    
+                const dateInput = document.createElement('p');
+                dateInput.classList.add('card-text');
+                dateInput.textContent = `${el.created_date}`;
+                cardBodyDiv.append(dateInput);
+    
+                const bottomDiv = document.createElement('div');
+                bottomDiv.classList.add('card-footer');
+                postDiv.append(bottomDiv)
+    
+                const rowDiv = document.createElement('div');
+                rowDiv.classList.add('row')
+                bottomDiv.append(rowDiv);
+    
+                const colDiv = document.createElement('div');
+                colDiv.classList.add('col');
+                rowDiv.append(colDiv);
 
+                const postReplyLink = document.createElement('a');
+                postReplyLink.href = '#'
+                postReplyLink.id = 'reply-post-link';
+                postReplyLink.classList.add('btn', 'btn-primary');
+                postReplyLink.dataset.toggle = 'modal';
+                postReplyLink.dataset.target = '#exampleModal';
+                postReplyLink.dataset.postId = `${el.id}`;
+                postReplyLink.textContent = 'Reply';
+                colDiv.append(postReplyLink)
+
+                const secondColDiv = document.createElement('div');
+                secondColDiv.classList.add('col');
+                rowDiv.append(secondColDiv);
+
+                const likeForm = document.createElement('form')
+                likeForm.classList.add('like-unlike-forms');
+                likeForm.dataset.formId = `${el.id}`;
+                secondColDiv.append(likeForm);
+
+                const likeButton = document.createElement('button');
+                likeButton.href = '#';
+                likeButton.id = `like-unlike-${el.id}`;
+                likeButton.classList.add('btn', 'btn-primary');
+                likeButton.textContent = `${el.likes ? `Unlike (${el.count})` : `Like (${el.count})`}`;
+                likeForm.append(likeButton);
+                
+                followPosts.append(postDiv);
+            });
+            /*
             fPosts.forEach(el => {
                 followPosts.innerHTML += `
-                <div id="delete-card-id-${el.id}" class="card mb-2" style="width: 18rem;">
+                <div class="card mb-2" style="width: 18rem;">
                     <div class="card-body">
                         <a class="other-profile-id" data-id="${el.creator.id}" href="#"><h5 class="card-title">${el.creator.name}</h5></a>
                         <p class="card-text">${el.content}</p>
@@ -801,7 +1138,7 @@ const followingProfiles = () => {
                     <div class="card-footer">
                         <div class="row">
                             <div class="col">
-                                <a href="#" id="delete-post-link" class="btn btn-primary deleteP" data-toggle="modal" data-target="#exampleModal" data-post-id="${el.id}">Delete</a>
+                                <a href="#" id="reply-post-link" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" data-post-id="${el.id}">Reply</a>
                             </div>
                             <div class="col">
                                 <form class="like-unlike-forms" data-form-id="${el.id}">
@@ -813,19 +1150,31 @@ const followingProfiles = () => {
                 </div>
             `
             });
+            */
             likeUnlikePosts();
             getDeletePost();
-            
-            console.log("This is for following posts " + response.sizer)
-            setTimeout(() => {
-                $('#follow-load-button').show();
-            }, 500);
+            $('#all-follow-boxes').show();
+            $('#all-profile-boxes').hide();
+            $('#all-posts-footers').hide();
             if (response.sizer === 0) {
-                followEndBox.textContent = 'No posts added yet ...'
-            } 
+                //profileEndBox.textContent = 'No posts added yet...'
+                $('#follow-start-box').show();
+                $('#follow-end-box').hide();
+                $('#follow-no-box').hide();
+            }
+            // Else if size is greater than or = to visible posts then make load more button invisible and add quote instead
+            //(response.sized <= profileVisible)
             else if (response.sizer <= followVisible) {
-                $('#follow-load-button').hide();
-                followEndBox.textContent = 'No more posts to load ...'
+                $('#follow-end-box').hide();
+                $('#follow-start-box').hide();
+                $('#follow-no-box').show();
+                //profileEndBox.textContent = 'No more posts to load...'
+            } else {
+                $('#follow-no-box').hide();
+                $('#follow-start-box').hide();
+                setTimeout(() => {
+                    $('#follow-end-box').show();
+                }, 500);
             }
             
         },
@@ -839,6 +1188,7 @@ const followingProfiles = () => {
 //let toFollowLoaded = false;
 
 $('#follow_posts').on('click', function() {
+    $('#all-follow-boxes').hide();
     followPosts.innerHTML = '';
     $('#f-posts').show();
     if ($('#main-body, #get-other-profile, #all-profile-objs').is(':visible')) {
@@ -859,4 +1209,4 @@ followLoadBtn.addEventListener('click', () => {
 });
 
 
-getData();
+//getData();

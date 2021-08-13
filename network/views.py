@@ -17,21 +17,22 @@ from django.views.decorators.cache import never_cache
 
 def index(request):
     form = PostForm(request.POST)
-    if request.is_ajax():
-        if form.is_valid():
-            item_form = form.save(commit=False)
-            item_form.creator = Profile.objects.get(user=request.user)
-            item_form.save()
-            return JsonResponse({
-                'id': item_form.id,
-                'content': item_form.content,
-                'created_date': item_form.created_date,
-                #'likes': True if profile in p.likes.all() else False,
-                #'count': p.like_count,
-                'creator': item_form.creator.user.username,
-                'creator_id': item_form.creator.user.id,
-            })
-    
+    #if request.is_ajax():
+    if form.is_valid():
+        item_form = form.save(commit=False)
+        item_form.creator = Profile.objects.get(user=request.user)
+        item_form.content = request.POST.get('content')
+        item_form.save()
+        return JsonResponse({
+            'id': item_form.id,
+            'content': item_form.content,
+            'created_date': item_form.created_date.strftime("%Y-%m-%d %H:%M:%S"),
+            #'likes': True if profile in p.likes.all() else False,
+            #'count': p.like_count,
+            'creator': item_form.creator.user.username,
+            'creator_id': item_form.creator.user.id,
+        })
+    print(form)
     context = {'form': form}
     return render(request, "network/index.html", context)
 
@@ -58,7 +59,7 @@ def getAjax(request, num_posts):
             item = {
             'id': p.id,
             'content': p.content,
-            'created_date': p.created_date,
+            'created_date': p.created_date.strftime("%Y-%m-%d %H:%M:%S"),
             'likes': True if profile in p.likes.all() else False,
             'count': p.like_count,
             'creator': {'name': p.creator.user.username, 'id': p.creator.user.id}
@@ -72,7 +73,7 @@ def like_unlike_post(request):
     # was semi-copying video of how to use ajax in django, the I was getting lazyobject type error in terminal because likes has a manytomany relation to Profile> So added two lines below and added profile in if statement, did not think of this myself got it from stack overflow. Now in console it produces {likes: false, count: 0} if profile already liked post and {likes: true, count: 1} if they haven't.
     user = request.user
     profile = Profile.objects.get(user=user)
-    print(profile)
+
     if request.is_ajax:
         # below is getting 'pk' from ajax in data:
             # 'pk': clickedId        
@@ -86,7 +87,7 @@ def like_unlike_post(request):
         else:
             likes = True
             obj.likes.add(profile)
-        print(obj.likes.all())
+
         return JsonResponse({'likes': likes, 'count': obj.like_count})
 """
 def profile_page(request):
@@ -125,7 +126,7 @@ def get_post(request, id):
     return JsonResponse({
         'id': post.id,
         'content': post.content,
-        'created_date': post.created_date,
+        'created_date': post.created_date.strftime("%Y-%m-%d %H:%M:%S"),
         'creator': post.creator.user.username,
         'creator_id': post.creator.user.id,
     })
@@ -175,7 +176,7 @@ def get_profile_stats(request):
     user = User.objects.get(id=id)
     #user = request.user
     profile = Profile.objects.get(user=user)
-    print(profile)
+
 
     single_profile_info = {
         'id': user.id,
@@ -192,7 +193,7 @@ def get_other_profile(request, num_posts):
     user = User.objects.get(id=id)
     mainUser = Profile.objects.get(user=request.user)
     profile = Profile.objects.get(user=user)
-    print(profile)
+
     
     visible = 3
     upper = num_posts
@@ -200,19 +201,20 @@ def get_other_profile(request, num_posts):
     sized = Post.objects.filter(creator=profile).all().count()
     
     posts = Post.objects.filter(creator=profile).all()
-    print(posts)
+
     single_profile_objs = []
     for spd in posts:
         spd_item = {
             'id': spd.id,
             'content': spd.content,
-            'created_date': spd.created_date,
+            'created_date': spd.created_date.strftime("%Y-%m-%d %H:%M:%S"),
             'likes': True if mainUser in spd.likes.all() else False,
             'count': spd.like_count,
-            'creator': {'name': spd.creator.user.username, 'id': spd.creator.user.id}
+            'creator': {'name': spd.creator.user.username},
+            'creator_id': spd.creator.user.id
         }
         single_profile_objs.append(spd_item)
-        print(single_profile_objs)
+
     '''
     paginate_single_profile_objs = Paginator(single_profile_objs, 3)
     page_number = request.GET.get('page')
@@ -265,7 +267,7 @@ def get_other_profile(request, num_posts):
 def following_posts(request, num_posts):
     profile = Profile.objects.get(user=request.user)
     followed_profiles = request.user.get_followed_profiles.all()
-    print(followed_profiles)
+
     
     visible = 3
     upper = num_posts
@@ -274,14 +276,14 @@ def following_posts(request, num_posts):
     
     
     posts = Post.objects.filter(creator__in=followed_profiles).all()
-    print(posts)
+
 
     followed_profiles_objs = []
     for fposts in posts:
         post_items = {
             'id': fposts.id,
             'content': fposts.content,
-            'created_date': fposts.created_date,
+            'created_date': fposts.created_date.strftime("%Y-%m-%d %H:%M:%S"),
             'likes': True if profile in fposts.likes.all() else False,
             'count': fposts.like_count,
             'creator': {'name': fposts.creator.user.username, 'id': fposts.creator.user.id}
